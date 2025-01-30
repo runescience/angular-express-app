@@ -1,7 +1,26 @@
 <div class="nav-container">
   <nav>
-    <a routerLink="/esch-list" routerLinkActive="active">Esch List</a>
-    <a routerLink="/support-list" routerLinkActive="active">Support List</a>
+    <table>
+      <tr>
+        <td><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></td>
+        <td><a routerLink="/esch-list" routerLinkActive="active">Esch List</a></td>
+        <td><a routerLink="/support-list" routerLinkActive="active">Support List</a></td>
+        <td><a routerLink="/team" routerLinkActive="active">Team</a></td>
+
+        <td><a routerLink="/question-type" routerLinkActive="active">Question Type</a></td>
+        <td><a routerLink="/question" routerLinkActive="active">Question</a></td>
+      </tr>
+      <tr>
+        <td><a routerLink="/workflow-template" routerLinkActive="active">Workflow Template</a></td>
+        <td><a routerLink="/select-workflow" routerLinkActive="active">Select Workflow</a></td>
+
+        <td><a routerLink="/role" routerLinkActive="active">Role</a></td>
+        <td><a routerLink="/user" routerLinkActive="active">User</a></td>
+
+        <td><a routerLink="/stages" routerLinkActive="active">Stages</a></td>
+        <td></td>
+      </tr>
+    </table>
   </nav>
 </div>
 <router-outlet></router-outlet>
