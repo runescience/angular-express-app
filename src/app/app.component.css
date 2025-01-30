@@ -1,0 +1,52 @@
+.nav-container {
+  padding: 10px;
+  background-color: #f8f9fa;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td {
+  padding: 2px;
+  border: 1px solid #dee2e6;
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: 500;
+  display: block;
+  padding: 4px;
+}
+
+a:hover {
+  color: #0056b3;
+  background-color: #e9ecef;
+  border-radius: 2px;
+}
+
+.active {
+  color: #0056b3;
+  font-weight: bold;
+  background-color: #e9ecef;
+  border-radius: 4px;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+  .nav-container {
+    padding: 4px;
+  }
+  
+  td {
+    padding: 4px;
+  }
+  
+  a {
+    font-size: 14px;
+    padding: 4px;
+  }
+}
