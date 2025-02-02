@@ -12,9 +12,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 
 export class TeamsComponent implements OnInit {
-  teams: Team[] = [];
+
   teamForm: FormGroup;
+  teams: Team[] = [];
   isEditing = false;
+  isModalOpen = false;
+
   currentTeamId: string | null = null;
   loading = false;
   error: string | null = null;
@@ -38,7 +41,7 @@ export class TeamsComponent implements OnInit {
     this.loading = true;
     this.error = null;
     console.log('Loading teams...');
-    
+
     this.teamsService.getAllTeams()
       .subscribe({
         next: (teams) => {
@@ -57,7 +60,6 @@ export class TeamsComponent implements OnInit {
       this.loading = true;
       this.error = null;
 
-      // Debug: Log form values
       console.log('Form Values:', this.teamForm.value);
 
       if (this.isEditing && this.currentTeamId) {
@@ -68,15 +70,14 @@ export class TeamsComponent implements OnInit {
               this.loadTeams();
               this.resetForm();
               this.loading = false;
+              this.closeModal();  // Close modal after successful update
             },
             error: (error: HttpErrorResponse) => {
               this.handleError(error, 'update');
             }
           });
       } else {
-        // Debug: Log attempt to create
         console.log('Attempting to create team...');
-
         this.teamsService.createTeam(this.teamForm.value)
           .subscribe({
             next: (response) => {
@@ -84,28 +85,29 @@ export class TeamsComponent implements OnInit {
               this.loadTeams();
               this.resetForm();
               this.loading = false;
+              this.closeModal();  // Close modal after successful creation
             },
             error: (error: HttpErrorResponse) => {
               this.handleError(error, 'create');
             }
           });
       }
-    } else {
-      // Debug: Log form validation errors
-      console.log('Form Invalid:', this.teamForm.errors);
-      Object.keys(this.teamForm.controls).forEach(key => {
-        const control = this.teamForm.get(key);
-        if (control?.errors) {
-          console.log(`${key} errors:`, control.errors);
-        }
-      });
     }
   }
+  openModal() {
+    this.isModalOpen = true;
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+    this.resetForm();
+  }
+
 
   // Add this helper method to handle errors
   private handleError(error: HttpErrorResponse, operation: 'create' | 'update' | 'delete') {
     console.error(`Error during ${operation} operation:`, error);
-    
+
     if (error.error instanceof ErrorEvent) {
       // Client-side error
       this.error = `Client Error: ${error.error.message}`;
@@ -115,9 +117,9 @@ export class TeamsComponent implements OnInit {
       console.error(
         `Backend returned code ${error.status}, ` +
         `body was:`, error.error);
-      
+
       this.error = `Server Error: ${error.status} - ${error.statusText}`;
-      
+
       // Add more specific error messages based on status codes
       switch (error.status) {
         case 400:
@@ -143,16 +145,11 @@ export class TeamsComponent implements OnInit {
     this.loading = false;
   }
 
-  
-
   editTeam(team: Team) {
     this.isEditing = true;
-    this.currentTeamId = team.id;
-    this.teamForm.patchValue({
-      teamName: team.teamName,
-      author: team.author,
-      isActive: team.isActive
-    });
+    this.currentTeamId = team.id;  // Set the currentTeamId
+    this.teamForm.patchValue(team);
+    this.openModal();
   }
 
   deleteTeam(id: string) {
@@ -174,9 +171,14 @@ export class TeamsComponent implements OnInit {
     }
   }
 
+
   resetForm() {
     this.isEditing = false;
-    this.currentTeamId = null;
-    this.teamForm.reset({ isActive: true });
+    this.currentTeamId = null;  // Reset the currentTeamId
+    this.teamForm.reset();
+    this.teamForm.patchValue({
+      isActive: true
+    });
   }
+
 }

@@ -1,0 +1,42 @@
+<!-- src/app/teams/teams.component.html -->
+<div class="teams-container">
+    <!-- Add Team button -->
+    <button (click)="openModal()" class="add-team-btn">Add New Team</button>
+
+    <div class="teams-list">
+        <h2>Teams List</h2>
+        <!-- Your existing table code -->
+    </div>
+
+    <!-- Modal Container -->
+    <div class="modal" [class.show]="isModalOpen">
+        <div class="modal-overlay" (click)="closeModal()"></div>
+        <div class="modal-content">
+
+            <!-- Your existing form code -->
+            <form [formGroup]="teamForm" (ngSubmit)="onSubmit()" class="team-form">
+                <h2>{{ isEditing ? 'Edit Team' : 'Add New Team' }}</h2>
+
+                <div class="form-group">
+                    <label for="teamName">Team Name:</label>
+                    <input id="teamName" type="text" formControlName="teamName">
+                    <div *ngIf="teamForm.get('teamName')?.invalid && teamForm.get('teamName')?.touched"
+                        class="error-text">
+                        Team name is required
+                    </div>
+                </div>
+
+                <!-- Rest of your form groups -->
+
+                <div class="form-actions">
+                    <button type="submit" [disabled]="!teamForm.valid || loading">
+                        {{ isEditing ? 'Update' : 'Add' }} Team
+                    </button>
+                    <button type="button" (click)="closeModal()" [disabled]="loading">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
