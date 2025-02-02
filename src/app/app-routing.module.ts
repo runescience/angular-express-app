@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { EschListComponent } from './esch-list/esch-list.component';
 import { SupportListComponent } from './support-list/support-list.component';
-import { TeamsComponent } from './teams/team.component';
+import { TeamsComponent } from './teams/teams.component';
 import { QuestionTypeComponent } from './question-type/question-type.component';
 import { QuestionComponent } from './question/question.component';
 import { WorkflowTemplateComponent } from './workflow-template/workflow-template.component';
@@ -23,7 +23,7 @@ const routes: Routes = [
   { path: 'notifications', component: NotificationsComponent },
   { path: 'esch-list', component: EschListComponent },
   { path: 'support-list', component: SupportListComponent },
-  { path: 'team', component: TeamsComponent },
+  { path: 'teams', component: TeamsComponent },
   { path: 'question-type', component: QuestionTypeComponent },
   { path: 'question', component: QuestionComponent },
   { path: 'workflow-template', component: WorkflowTemplateComponent },
