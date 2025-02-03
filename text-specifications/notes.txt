@@ -3,12 +3,14 @@ hello, i want to make an angular program that uses Express.js endpoints to switc
  for teams component, I would like to do CRUD screens using sqlite, and orm. in the db, use uuid-4[:8] for id, teamname, author, createdon, updatedon, isActive boolean. crud Read is a list of rows that have add and delete button, add/edit screen on each row
 Use uuid-4[:8] for id, teamname, author, createdon, updatedon, isActive boolean. 
 
-for option-lists,I would like to do CRUD screens using sqlite, and orm. in the db, use uuid-4[:8] for id,
+for option-lists,I would like to do CRUD screens using sqlite typeorm, and orm. 
 
+in the db, use uuid-4[:8] for id,
 name  nullable=False
-list_data  nullable=False
+listdata  nullable=False
 version  nullable=True
 supercedes  nullable=True
 author = nullable=False
 
 I would like to do that using the  shared base and components paradigm you listed. see your code in  shared/components/list-container/list-container.component.ts,modal.component.css, shared/components/modal/modal.component.ts, etc
+

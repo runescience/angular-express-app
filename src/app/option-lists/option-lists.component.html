@@ -1,1 +1,95 @@
-<p>option-lists works!</p>
+
+<div class="option-lists-container">
+    <button (click)="openModal()" class="add-btn">Add New Option List</button>
+
+    <div class="lists-list">
+        <h2>Option Lists</h2>
+        <div *ngIf="loading" class="loading">Loading...</div>
+        <table *ngIf="!loading && optionLists.length > 0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>List Data</th>
+                    <th>Version</th>
+                    <th>Supercedes</th>
+                    <th>Author</th>
+                    <th>Created On</th>
+                    <th>Updated On</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let list of optionLists">
+                    <td>{{ list.id }}</td>
+                    <td>{{ list.name }}</td>
+                    <td>{{ list.list_data }}</td>
+                    <td>{{ list.version }}</td>
+                    <td>{{ list.supercedes }}</td>
+                    <td>{{ list.author }}</td>
+                    <td>{{ list.createdOn | date }}</td>
+                    <td>{{ list.updatedOn | date }}</td>
+                    <td>
+                        <button (click)="editOptionList(list)" [disabled]="loading">Edit</button>
+                        <button (click)="deleteOptionList(list.id)" [disabled]="loading">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div *ngIf="!loading && optionLists.length === 0" class="no-data">
+            No option lists found
+        </div>
+    </div>
+
+    <div class="modal" [class.show]="isModalOpen">
+        <div class="modal-overlay" (click)="closeModal()"></div>
+        <div class="modal-content">
+            <form [formGroup]="optionListForm" (ngSubmit)="onSubmit()" class="option-list-form">
+                <h2>{{ isEditing ? 'Edit Option List' : 'Add New Option List' }}</h2>
+
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input id="name" type="text" formControlName="name">
+                    <div *ngIf="optionListForm.get('name')?.invalid && optionListForm.get('name')?.touched" class="error-text">
+                        Name is required
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="list_data">List Data:</label>
+                    <textarea id="list_data" formControlName="list_data"></textarea>
+                    <div *ngIf="optionListForm.get('list_data')?.invalid && optionListForm.get('list_data')?.touched" class="error-text">
+                        List data is required
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="version">Version:</label>
+                    <input id="version" type="text" formControlName="version">
+                </div>
+
+                <div class="form-group">
+                    <label for="supercedes">Supercedes:</label>
+                    <input id="supercedes" type="text" formControlName="supercedes">
+                </div>
+
+                <div class="form-group">
+                    <label for="author">Author:</label>
+                    <input id="author" type="text" formControlName="author">
+                    <div *ngIf="optionListForm.get('author')?.invalid && optionListForm.get('author')?.touched" class="error-text">
+                        Author is required
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" [disabled]="!optionListForm.valid || loading">
+                        {{ isEditing ? 'Update' : 'Add' }} Option List
+                    </button>
+                    <button type="button" (click)="closeModal()" [disabled]="loading">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

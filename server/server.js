@@ -32,6 +32,19 @@ const db = new sqlite3.Database('teams.db', (err) => {
                 isActive INTEGER DEFAULT 1
             )
         `);
+        // Create option lists table if it doesn't exist
+        db.run(`
+            CREATE TABLE IF NOT EXISTS list_options (
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                list_data TEXT NOT NULL,
+                version TEXT,
+                supercedes TEXT,
+                author TEXT NOT NULL,
+                createdOn DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updatedOn DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
     }
 });
 
@@ -134,6 +147,107 @@ app.delete('/api/teams/:id', (req, res) => {
         res.status(204).send();
     });
 });
+
+// Option Lists CRUD endpoints
+app.get('/api/option-lists', (req, res) => {
+    db.all('SELECT * FROM list_options', [], (err, rows) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        res.json(rows);
+    });
+});
+
+app.get('/api/option-lists/:id', (req, res) => {
+    db.get('SELECT * FROM list_options WHERE id = ?', [req.params.id], (err, row) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        if (!row) {
+            res.status(404).json({ error: 'Option list not found' });
+            return;
+        }
+        res.json(row);
+    });
+});
+
+app.post('/api/option-lists', (req, res) => {
+    const { name, list_data, version, supercedes, author } = req.body;
+    const id = uuidv4().substring(0, 8);
+
+    db.run(
+        'INSERT INTO list_options (id, name, list_data, version, supercedes, author) VALUES (?, ?, ?, ?, ?, ?)',
+        [id, name, list_data, version, supercedes, author],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            res.status(201).json({
+                id,
+                name,
+                list_data,
+                version,
+                supercedes,
+                author,
+                createdOn: new Date(),
+                updatedOn: new Date()
+            });
+        }
+    );
+});
+
+app.put('/api/option-lists/:id', (req, res) => {
+    const { name, list_data, version, supercedes, author } = req.body;
+
+    db.run(
+        `UPDATE list_options 
+         SET name = ?, list_data = ?, version = ?, supercedes = ?, author = ?, updatedOn = CURRENT_TIMESTAMP 
+         WHERE id = ?`,
+        [name, list_data, version, supercedes, author, req.params.id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'Option list not found' });
+                return;
+            }
+            res.json({
+                id: req.params.id,
+                name,
+                list_data,
+                version,
+                supercedes,
+                author,
+                updatedOn: new Date()
+            });
+        }
+    );
+});
+
+app.delete('/api/option-lists/:id', (req, res) => {
+    db.run('DELETE FROM list_options WHERE id = ?', [req.params.id], function (err) {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        if (this.changes === 0) {
+            res.status(404).json({ error: 'Option list not found' });
+            return;
+        }
+        res.status(204).send();
+    });
+});
+
 
 // Set port and start server
 const PORT = process.env.PORT || 3000;
