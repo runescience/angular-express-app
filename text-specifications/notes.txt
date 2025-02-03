@@ -14,3 +14,13 @@ author = nullable=False
 
 I would like to do that using the  shared base and components paradigm you listed. see your code in  shared/components/list-container/list-container.component.ts,modal.component.css, shared/components/modal/modal.component.ts, etc
 
+
+
+Similar to teams compoent, I would like a new update for option-lists, that has CRUD capability for using sqlite, and typeorm. For listing, adding, updating deleting records for option-lists
+
+in the team db, new table list-options. use uuid-4[:8] for id
+name nullable=False, list_data nullable=False
+version nullable=True, supercedes nullable=True,
+author = nullable=False
+
+use these files, to copy the structure and content into updates for the option-lists files: @teams.components.html, has list and modal form, to aid user in showing rows, and adding updating new rows. @teams.components.ts, @teams.entity.ts, @teams.interface.ts, @teams.service.ts
