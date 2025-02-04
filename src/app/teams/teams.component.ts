@@ -29,7 +29,7 @@ export class TeamsComponent implements OnInit {
     this.teamForm = this.fb.group({
       teamName: ['', Validators.required],
       author: ['', Validators.required],
-      isActive: [true]
+      is_active: [true]
     });
   }
 
@@ -177,7 +177,7 @@ export class TeamsComponent implements OnInit {
     this.currentTeamId = null;  // Reset the currentTeamId
     this.teamForm.reset();
     this.teamForm.patchValue({
-      isActive: true
+      is_active: true
     });
   }
 

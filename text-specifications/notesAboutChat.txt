@@ -20,11 +20,11 @@ Teams component with CRUD operations using:
 
         author
 
-        createdon
+        created_on
 
-        updatedon
+        updated_on
 
-        isActive (boolean)
+        is_active (boolean)
 
     List view with add/delete buttons
 

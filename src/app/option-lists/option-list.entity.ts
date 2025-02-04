@@ -23,8 +23,8 @@ export class OptionList {
   author!: string;
 
   @CreateDateColumn()
-  createdOn!: Date;
+  created_on!: Date;
 
   @UpdateDateColumn()
-  updatedOn!: Date;
+  updated_on!: Date;
 }

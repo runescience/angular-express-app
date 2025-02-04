@@ -24,9 +24,9 @@
                     <td>{{ team.id }}</td>
                     <td>{{ team.teamName }}</td>
                     <td>{{ team.author }}</td>
-                    <td>{{ team.createdOn | date }}</td>
-                    <td>{{ team.updatedOn | date }}</td>
-                    <td>{{ team.isActive ? 'Active' : 'Inactive' }}</td>
+                    <td>{{ team.created_on | date }}</td>
+                    <td>{{ team.updated_on | date }}</td>
+                    <td>{{ team.is_active ? 'Active' : 'Inactive' }}</td>
                     <td>
                         <button (click)="editTeam(team)" [disabled]="loading">Edit</button>
                         <button (click)="deleteTeam(team.id)" [disabled]="loading">Delete</button>
@@ -70,7 +70,7 @@
 
                 <div class="form-group">
                     <label>
-                        <input type="checkbox" formControlName="isActive">
+                        <input type="checkbox" formControlName="is_active">
                         Active
                     </label>
                 </div>

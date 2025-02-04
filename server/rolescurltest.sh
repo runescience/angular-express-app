@@ -1,8 +1,8 @@
 # Get all roles
-curl -X GET http://0.0.0.0:3000/api/roles
+curl -X GET http://localhost:3000/api/roles
 
 # Create a new role
-curl -X POST http://0.0.0.0:3000/api/roles \
+curl -X POST http://localhost:3000/api/roles \
 -H "Content-Type: application/json" \
 -d '{
     "role_name": "Admin",
@@ -11,10 +11,10 @@ curl -X POST http://0.0.0.0:3000/api/roles \
 }'
 
 # Retrieve a role by ID (replace <role_id> with the actual ID)
-curl -X GET http://0.0.0.0:3000/api/roles/<role_id>
+curl -X GET http://localhost:3000/api/roles/<role_id>
 
 # Update a role by ID (replace <role_id> with the actual ID)
-curl -X PUT http://0.0.0.0:3000/api/roles/<role_id> \
+curl -X PUT http://localhost:3000/api/roles/<role_id> \
 -H "Content-Type: application/json" \
 -d '{
     "role_name": "Updated Role Name",
@@ -23,6 +23,6 @@ curl -X PUT http://0.0.0.0:3000/api/roles/<role_id> \
 }'
 
 # Delete a role by ID (replace <role_id> with the actual ID)
-curl -X DELETE http://0.0.0.0:3000/api/roles/<role_id>
+curl -X DELETE http://localhost:3000/api/roles/<role_id>
 
 

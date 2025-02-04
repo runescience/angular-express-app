@@ -3,16 +3,16 @@
     "id": "77527855",
     "teamName": "New Team",
     "author": "Author Name",
-    "createdOn": "2025-02-03 19:01:42",
-    "updatedOn": "2025-02-03 19:01:42",
-    "isActive": 1
+    "created_on": "2025-02-03 19:01:42",
+    "updated_on": "2025-02-03 19:01:42",
+    "is_active": 1
   },
   {
     "id": "e46b3e95",
     "teamName": "Mets",
     "author": "Kevin",
-    "createdOn": "2025-02-03 19:12:29",
-    "updatedOn": "2025-02-03 19:12:29",
-    "isActive": 1
+    "created_on": "2025-02-03 19:12:29",
+    "updated_on": "2025-02-03 19:12:29",
+    "is_active": 1
   }
 ]

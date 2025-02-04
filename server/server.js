@@ -27,9 +27,9 @@ const db = new sqlite3.Database('teams.db', (err) => {
                 id TEXT PRIMARY KEY,
                 teamName TEXT NOT NULL,
                 author TEXT NOT NULL,
-                createdOn DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updatedOn DATETIME DEFAULT CURRENT_TIMESTAMP,
-                isActive INTEGER DEFAULT 1
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                is_active INTEGER DEFAULT 1
             )
         `);
 
@@ -41,6 +41,7 @@ const db = new sqlite3.Database('teams.db', (err) => {
                 role_id TEXT PRIMARY KEY,
                 role_name TEXT NOT NULL,
                 description TEXT,
+                author TEXT NOT NULL,
                 created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 is_active INTEGER DEFAULT 1
@@ -56,8 +57,9 @@ const db = new sqlite3.Database('teams.db', (err) => {
                 version TEXT,
                 supercedes TEXT,
                 author TEXT NOT NULL,
-                createdOn DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updatedOn DATETIME DEFAULT CURRENT_TIMESTAMP
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                is_active INTEGER DEFAULT 1
             )
         `);
     }
@@ -93,12 +95,12 @@ app.get('/api/teams/:id', (req, res) => {
 
 // POST new team
 app.post('/api/teams', (req, res) => {
-    const { teamName, author, isActive } = req.body;
+    const { teamName, author, is_active } = req.body;
     const id = uuidv4().substring(0, 8);
 
     db.run(
-        'INSERT INTO teams (id, teamName, author, isActive) VALUES (?, ?, ?, ?)',
-        [id, teamName, author, isActive ? 1 : 0],
+        'INSERT INTO teams (id, teamName, author, is_active) VALUES (?, ?, ?, ?)',
+        [id, teamName, author, is_active ? 1 : 0],
         function (err) {
             if (err) {
                 console.error(err);
@@ -109,9 +111,9 @@ app.post('/api/teams', (req, res) => {
                 id,
                 teamName,
                 author,
-                isActive,
-                createdOn: new Date(),
-                updatedOn: new Date()
+                is_active,
+                created_on: new Date(),
+                updated_on: new Date()
             });
         }
     );
@@ -119,13 +121,13 @@ app.post('/api/teams', (req, res) => {
 
 // PUT update team
 app.put('/api/teams/:id', (req, res) => {
-    const { teamName, author, isActive } = req.body;
+    const { teamName, author, is_active } = req.body;
 
     db.run(
         `UPDATE teams 
-         SET teamName = ?, author = ?, isActive = ?, updatedOn = CURRENT_TIMESTAMP 
+         SET teamName = ?, author = ?, is_active = ?, updated_on = CURRENT_TIMESTAMP 
          WHERE id = ?`,
-        [teamName, author, isActive ? 1 : 0, req.params.id],
+        [teamName, author, is_active ? 1 : 0, req.params.id],
         function (err) {
             if (err) {
                 console.error(err);
@@ -140,8 +142,8 @@ app.put('/api/teams/:id', (req, res) => {
                 id: req.params.id,
                 teamName,
                 author,
-                isActive,
-                updatedOn: new Date()
+                is_active,
+                updated_on: new Date()
             });
         }
     );
@@ -191,12 +193,12 @@ app.get('/api/option-lists/:id', (req, res) => {
 });
 
 app.post('/api/option-lists', (req, res) => {
-    const { name, list_data, version, supercedes, author } = req.body;
+    const { name, list_data, version, supercedes, author, is_active } = req.body;
     const id = uuidv4().substring(0, 8);
 
     db.run(
-        'INSERT INTO list_options (id, name, list_data, version, supercedes, author) VALUES (?, ?, ?, ?, ?, ?)',
-        [id, name, list_data, version, supercedes, author],
+        'INSERT INTO list_options (id, name, list_data, version, supercedes,  author, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [id, name, list_data, version, supercedes, author, is_active],
         function (err) {
             if (err) {
                 console.error(err);
@@ -210,21 +212,21 @@ app.post('/api/option-lists', (req, res) => {
                 version,
                 supercedes,
                 author,
-                createdOn: new Date(),
-                updatedOn: new Date()
+                is_active
+
             });
         }
     );
 });
 
 app.put('/api/option-lists/:id', (req, res) => {
-    const { name, list_data, version, supercedes, author } = req.body;
+    const { name, list_data, version, supercedes, author, is_author } = req.body;
 
     db.run(
         `UPDATE list_options 
-         SET name = ?, list_data = ?, version = ?, supercedes = ?, author = ?, updatedOn = CURRENT_TIMESTAMP 
+         SET name = ?, list_data = ?, version = ?, supercedes = ?, author = ?, isAuthor = ?, updated_on = CURRENT_TIMESTAMP 
          WHERE id = ?`,
-        [name, list_data, version, supercedes, author, req.params.id],
+        [name, list_data, version, supercedes, author, is_author, req.params.id],
         function (err) {
             if (err) {
                 console.error(err);
@@ -242,7 +244,8 @@ app.put('/api/option-lists/:id', (req, res) => {
                 version,
                 supercedes,
                 author,
-                updatedOn: new Date()
+                is_author,
+                updated_on: new Date()
             });
         }
     );
@@ -277,6 +280,43 @@ app.get("/api/roles", (req, res) => {
         res.json(rows);
     });
 });
+app.delete("/api/roles/:id", (req, res) => {
+    const roleId = req.params.id;
+    console.log(`[${new Date().toISOString()}] DELETE request received for role ID: ${roleId}`);
+
+    // First, get the role details before deletion for logging purposes
+    db.get("SELECT * FROM roles WHERE role_id = ?", [roleId], (err, role) => {
+        if (err) {
+            console.error(`[${new Date().toISOString()}] Error fetching role before deletion:`, err);
+            return res.status(500).json({ error: "Internal server error" });
+        }
+
+        // Proceed with deletion
+        db.run("DELETE FROM roles WHERE role_id = ?", [roleId], function (err) {
+            if (err) {
+                console.error(`[${new Date().toISOString()}] Error deleting role ${roleId}:`, err);
+                return res.status(500).json({ error: "Internal server error" });
+            }
+
+            if (this.changes === 0) {
+                console.log(`[${new Date().toISOString()}] No role found with ID: ${roleId}`);
+                return res.status(404).json({ error: "Role not found" });
+            }
+
+            console.log(`[${new Date().toISOString()}] Successfully deleted role:`, {
+                roleId,
+                roleDetails: role,
+                changesCount: this.changes
+            });
+
+            res.status(200).json({
+                message: "Role deleted successfully",
+                deletedRole: role
+            });
+        });
+    });
+});
+
 
 // Endpoint to get a single role by ID
 app.get("/api/roles/:id", (req, res) => {
@@ -300,12 +340,12 @@ app.get("/api/roles/:id", (req, res) => {
 
 // Endpoint for creating a new role
 app.post("/api/roles", (req, res) => {
-    const { role_name, description, is_active } = req.body;
+    const { role_name, description, author, is_active } = req.body;  // Add author to destructuring
     const role_id = uuidv4().substring(0, 8);
 
     db.run(
-        "INSERT INTO roles (role_id, role_name, description, is_active) VALUES (?, ?, ?, ?)",
-        [role_id, role_name, description, is_active ? 1 : 0],
+        "INSERT INTO roles (role_id, role_name, description, author, is_active) VALUES (?, ?, ?, ?, ?)",
+        [role_id, role_name, description, author, is_active ? 1 : 0],
         function (err) {
             if (err) {
                 console.error(err);
@@ -316,6 +356,7 @@ app.post("/api/roles", (req, res) => {
                 role_id,
                 role_name,
                 description,
+                author,
                 is_active,
                 created_on: new Date(),
                 updated_at: new Date(),
@@ -330,9 +371,9 @@ app.put("/api/roles/:id", (req, res) => {
 
     db.run(
         `UPDATE roles 
-         SET role_name = ?, description = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP 
+         SET role_name = ?, description = ?, author = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP 
          WHERE role_id = ?`,
-        [role_name, description, is_active ? 1 : 0, req.params.id],
+        [role_name, description, author, is_active ? 1 : 0, req.params.id],
         function (err) {
             if (err) {
                 console.error(err);
@@ -347,6 +388,7 @@ app.put("/api/roles/:id", (req, res) => {
                 role_id: req.params.id,
                 role_name,
                 description,
+                author,
                 is_active,
                 updated_at: new Date(),
             });

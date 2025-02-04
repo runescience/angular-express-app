@@ -8,17 +8,17 @@ export class Team {
   id: string = uuidv4().substring(0, 8);
 
   @Column()
-    teamName!: string;
+  teamName!: string;
 
   @Column()
-    author!: string;
+  author!: string;
 
   @CreateDateColumn()
-    createdOn!: Date;
+  created_on!: Date;
 
   @UpdateDateColumn()
-    updatedOn!: Date;
+  updated_on!: Date;
 
   @Column({ default: true })
-    isActive!: boolean;
+  is_active!: boolean;
 }

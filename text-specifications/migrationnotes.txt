@@ -51,13 +51,13 @@ export class Comment {
     team: Team;
 
     @CreateDateColumn()
-    createdOn: Date;
+    created_on: Date;
 
     @UpdateDateColumn()
-    updatedOn: Date;
+    updated_on: Date;
 
     @Column({ default: true })
-    isActive: boolean;
+    is_active: boolean;
 }
 
 Copy
@@ -85,9 +85,9 @@ export class CreateCommentTable1234567890123 implements MigrationInterface {
             CREATE TABLE "comment" (
                 "id" varchar PRIMARY KEY NOT NULL,
                 "content" varchar NOT NULL,
-                "createdOn" datetime NOT NULL DEFAULT (datetime('now')),
-                "updatedOn" datetime NOT NULL DEFAULT (datetime('now')),
-                "isActive" boolean NOT NULL DEFAULT (1),
+                "created_on" datetime NOT NULL DEFAULT (datetime('now')),
+                "updated_on" datetime NOT NULL DEFAULT (datetime('now')),
+                "is_active" boolean NOT NULL DEFAULT (1),
                 "teamId" varchar
             )
         `);

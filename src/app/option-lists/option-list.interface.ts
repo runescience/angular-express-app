@@ -6,6 +6,6 @@ export interface OptionList {
   version?: string;
   supercedes?: string;
   author: string;
-  createdOn: Date;
-  updatedOn: Date;
+  created_on: Date;
+  updated_on: Date;
 }

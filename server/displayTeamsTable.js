@@ -2,7 +2,7 @@
 
 const axios = require("axios");
 
-axios.get('http://0.0.0.0:3000/api/teams')
+axios.get('http://localhost:3000/api/teams')
     .then(response => {
         const teams = response.data;
         if (teams.length === 0) {

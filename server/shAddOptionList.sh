@@ -11,7 +11,7 @@ VERSION=$3
 SUPERCEDES=$4
 AUTHOR=$5
 
-curl -X POST http://0.0.0.0:3000/api/option-lists \
+curl -X POST http://localhost:3000/api/option-lists \
 -H "Content-Type: application/json" \
 -d "{
     \"name\": \"$NAME\",

@@ -3,7 +3,7 @@
 const axios = require("axios");
 
 axios
-    .get("http://0.0.0.0:3000/api/option-lists")
+    .get("http://localhost:3000/api/option-lists")
     .then((response) => {
         const optionLists = response.data;
         if (optionLists.length === 0) {

@@ -1,7 +1,7 @@
 hello, i want to make an angular program that uses Express.js endpoints to switch for navigating screens and rest api. this angular app has 2 components. Esch-list, and Support-list. these links are in a <div> container at the top of each page so the user cna switchfrom page to page buy clicking the endpoint links. Each angular component lists things out of a jsondb. need detailed including ng generate etc
 
- for teams component, I would like to do CRUD screens using sqlite, and orm. in the db, use uuid-4[:8] for id, teamname, author, createdon, updatedon, isActive boolean. crud Read is a list of rows that have add and delete button, add/edit screen on each row
-Use uuid-4[:8] for id, teamname, author, createdon, updatedon, isActive boolean. 
+ for teams component, I would like to do CRUD screens using sqlite, and orm. in the db, use uuid-4[:8] for id, teamname, author, created_on, updated_on, is_active boolean. crud Read is a list of rows that have add and delete button, add/edit screen on each row
+Use uuid-4[:8] for id, teamname, author, created_on, updated_on, is_active boolean. 
 
 for option-lists,I would like to do CRUD screens using sqlite typeorm, and orm. 
 

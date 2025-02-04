@@ -3,12 +3,12 @@
 // In case of an error, it logs the error message to the console.
 
 // listTeams.js
-//curl -X GET http://0.0.0.0:3000/api/teams
+//curl -X GET http://localhost:3000/api/teams
 //or
 
 const axios = require("axios");
 
-axios.get('http://0.0.0.0:3000/api/teams')
+axios.get('http://localhost:3000/api/teams')
     .then(response => {
         console.log('Teams List:', response.data);
     })

@@ -1,4 +1,3 @@
-<!-- src/app/role/role.component.html -->
 <div class="roles-container">
     <button (click)="openModal()" class="add-role-btn">Add New Role</button>
 
@@ -11,8 +10,10 @@
                     <th>Role ID</th>
                     <th>Role Name</th>
                     <th>Description</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>
+                        Author
+                    </th>
+                    <th>is_active</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,41 +21,61 @@
                     <td>{{ role.role_id }}</td>
                     <td>{{ role.role_name }}</td>
                     <td>{{ role.description || 'N/A' }}</td>
+                    <td>{{ role.author }}</td>
                     <td>{{ role.is_active ? 'Active' : 'Inactive' }}</td>
                     <td>
-                        <button (click)="editRole(role)">Edit</button>
-                        <button (click)="deleteRole(role.role_id)">Delete</button>
+                        <button (click)="editRole(role)" [disabled]="loading">Edit</button>
+                        <button (click)="deleteRole(role.role_id)" [disabled]="loading">Delete</button>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <div *ngIf="!loading && roles.length === 0">No roles found</div>
+        <div *ngIf="!loading && roles.length === 0" class="no-data">
+            No roles found
+        </div>
     </div>
 
     <div class="modal" [class.show]="isModalOpen">
         <div class="modal-overlay" (click)="closeModal()"></div>
         <div class="modal-content">
-            <form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="roleForm" (ngSubmit)="onSubmit()" class="role-form">
                 <h2>{{ isEditing ? 'Edit Role' : 'Add New Role' }}</h2>
 
-                <div>
+                <div class="form-group">
                     <label for="role_name">Role Name:</label>
-                    <input id="role_name" formControlName="role_name">
+                    <input id="role_name" type="text" formControlName="role_name">
+                    <div *ngIf="roleForm.get('role_name')?.invalid && roleForm.get('role_name')?.touched"
+                        class="error-text">
+                        Role name is required
+                    </div>
                 </div>
-                <div>
+
+                <div class="form-group">
                     <label for="description">Description:</label>
-                    <input id="description" formControlName="description">
+                    <input id="description" type="text" formControlName="description">
                 </div>
-                <div>
+
+                <div class="form-group">
+                    <label for="author">author:</label>
+                    <input id="author" type="text" formControlName="author">
+                </div>
+
+                <div class="form-group">
                     <label>
-                        <input type="checkbox" formControlName="is_active"> Active
+                        <input type="checkbox" formControlName="is_active">
+                        Active
                     </label>
                 </div>
 
-                <button type="submit">{{ isEditing ? 'Update' : 'Add' }}</button>
-                <button type="button" (click)="closeModal()">Cancel</button>
+                <div class="form-actions">
+                    <button type="submit" [disabled]="!roleForm.valid || loading">
+                        {{ isEditing ? 'Update' : 'Add' }} Role
+                    </button>
+                    <button type="button" (click)="closeModal()" [disabled]="loading">
+                        Cancel
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 </div>
-<p>roles works!</p>

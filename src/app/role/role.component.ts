@@ -25,6 +25,7 @@ export class RolesComponent implements OnInit {
     this.roleForm = this.fb.group({
       role_name: ['', Validators.required],
       description: [''],
+      author: ['', Validators.required],
       is_active: [true]
     });
   }

@@ -3,13 +3,13 @@
 const axios = require("axios");
 
 const newTeam = {
-    teamName: "New Team",
-    author: "Author Name",
-    isActive: true,
+    teamName: "New Green3",
+    author: "Author Name3",
+    is_active: true,
 };
 
 axios
-    .post("http://0.0.0.0:3000/api/teams", newTeam)
+    .post("http://localhost:3000/api/teams", newTeam)
     .then((response) => {
         console.log("Team added successfully:", response.data);
     })
@@ -22,12 +22,12 @@ axios
 
 /* ************************
 
-curl -X POST http://0.0.0.0:3000/api/teams \
+curl -X POST http://localhost:3000/api/teams \
 -H "Content-Type: application/json" \
 -d '{
     "teamName": "New Team",
     "author": "Author Name",
-    "isActive": true
+    "is_active": true
 }'
 
 ****** */

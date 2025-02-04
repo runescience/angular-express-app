@@ -1,4 +1,3 @@
-
 <div class="option-lists-container">
     <button (click)="openModal()" class="add-btn">Add New Option List</button>
 
@@ -27,8 +26,8 @@
                     <td>{{ list.version }}</td>
                     <td>{{ list.supercedes }}</td>
                     <td>{{ list.author }}</td>
-                    <td>{{ list.createdOn | date }}</td>
-                    <td>{{ list.updatedOn | date }}</td>
+                    <td>{{ list.created_on | date }}</td>
+                    <td>{{ list.updated_on | date }}</td>
                     <td>
                         <button (click)="editOptionList(list)" [disabled]="loading">Edit</button>
                         <button (click)="deleteOptionList(list.id)" [disabled]="loading">Delete</button>
@@ -50,7 +49,8 @@
                 <div class="form-group">
                     <label for="name">Name:</label>
                     <input id="name" type="text" formControlName="name">
-                    <div *ngIf="optionListForm.get('name')?.invalid && optionListForm.get('name')?.touched" class="error-text">
+                    <div *ngIf="optionListForm.get('name')?.invalid && optionListForm.get('name')?.touched"
+                        class="error-text">
                         Name is required
                     </div>
                 </div>
@@ -58,7 +58,8 @@
                 <div class="form-group">
                     <label for="list_data">List Data:</label>
                     <textarea id="list_data" formControlName="list_data"></textarea>
-                    <div *ngIf="optionListForm.get('list_data')?.invalid && optionListForm.get('list_data')?.touched" class="error-text">
+                    <div *ngIf="optionListForm.get('list_data')?.invalid && optionListForm.get('list_data')?.touched"
+                        class="error-text">
                         List data is required
                     </div>
                 </div>
@@ -76,7 +77,8 @@
                 <div class="form-group">
                     <label for="author">Author:</label>
                     <input id="author" type="text" formControlName="author">
-                    <div *ngIf="optionListForm.get('author')?.invalid && optionListForm.get('author')?.touched" class="error-text">
+                    <div *ngIf="optionListForm.get('author')?.invalid && optionListForm.get('author')?.touched"
+                        class="error-text">
                         Author is required
                     </div>
                 </div>
