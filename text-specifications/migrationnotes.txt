@@ -1,0 +1,223 @@
+I'll show you how to create and run migrations for a new table using TypeORM. Here's the step-by-step process: https://stackoverflow.com/questions/56617592
+
+First, create a migration configuration in your package.json:
+
+{
+  "scripts": {
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:generate": "npm run typeorm migration:generate -n",
+    "migration:run": "npm run typeorm migration:run -- -d src/db/config.ts",
+    "migration:revert": "npm run typeorm migration:revert -- -d src/db/config.ts"
+  }
+}
+
+Copy
+
+Insert at cursor
+json
+Update your db/config.ts to include migrations:
+
+import { DataSource } from "typeorm";
+import { Team } from "../entities/Team";
+
+export const AppDataSource = new DataSource({
+    type: "sqlite",
+    database: "database.sqlite",
+    entities: [Team],
+    migrations: ["src/migrations/*.ts"],
+    synchronize: false, // Set this to false when using migrations
+    logging: false
+});
+
+Copy
+
+Insert at cursor
+typescript
+Create your entity first (e.g., for a new Comment table):
+
+// src/entities/Comment.ts
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from "typeorm";
+import { Team } from "./Team";
+
+@Entity()
+export class Comment {
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
+    @Column()
+    content: string;
+
+    @ManyToOne(() => Team, team => team.comments)
+    team: Team;
+
+    @CreateDateColumn()
+    createdOn: Date;
+
+    @UpdateDateColumn()
+    updatedOn: Date;
+
+    @Column({ default: true })
+    isActive: boolean;
+}
+
+Copy
+
+Insert at cursor
+typescript
+Generate a migration (run this in terminal):
+
+npm run migration:generate src/migrations/CreateCommentTable
+
+Copy
+
+Insert at cursor
+bash
+This will create a new file in your migrations folder like this:
+
+// src/migrations/[timestamp]-CreateCommentTable.ts
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class CreateCommentTable1234567890123 implements MigrationInterface {
+    name = 'CreateCommentTable1234567890123'
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`
+            CREATE TABLE "comment" (
+                "id" varchar PRIMARY KEY NOT NULL,
+                "content" varchar NOT NULL,
+                "createdOn" datetime NOT NULL DEFAULT (datetime('now')),
+                "updatedOn" datetime NOT NULL DEFAULT (datetime('now')),
+                "isActive" boolean NOT NULL DEFAULT (1),
+                "teamId" varchar
+            )
+        `);
+        
+        await queryRunner.query(`
+            CREATE INDEX "IDX_comment_team" ON "comment" ("teamId")
+        `);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`DROP INDEX "IDX_comment_team"`);
+        await queryRunner.query(`DROP TABLE "comment"`);
+    }
+}
+
+Copy
+
+Insert at cursor
+typescript
+Run the migration:
+
+npm run migration:run
+
+Copy
+
+Insert at cursor
+bash
+If you need to revert the migration:
+
+npm run migration:revert
+
+Copy
+
+Insert at cursor
+bash
+Add the new entity to your db/config.ts:
+
+import { DataSource } from "typeorm";
+import { Team } from "../entities/Team";
+import { Comment } from "../entities/Comment";
+
+export const AppDataSource = new DataSource({
+    type: "sqlite",
+    database: "database.sqlite",
+    entities: [Team, Comment],
+    migrations: ["src/migrations/*.ts"],
+    synchronize: false,
+    logging: false
+});
+
+Copy
+
+Insert at cursor
+typescript
+Create database operations for the new table:
+
+// src/db/comments.ts
+import { AppDataSource } from "./config";
+import { Comment } from "../entities/Comment";
+
+export const CommentRepository = AppDataSource.getRepository(Comment);
+
+export const commentOperations = {
+    findAll: async () => {
+        return await CommentRepository.find({
+            relations: ["team"]
+        });
+    },
+    
+    create: async (commentData: Partial<Comment>) => {
+        const comment = CommentRepository.create(commentData);
+        return await CommentRepository.save(comment);
+    },
+    
+    // Add other operations...
+};
+
+Copy
+
+Insert at cursor
+typescript
+Create routes for the new table:
+
+// src/routes/comments.ts
+import { Router } from "express";
+import { commentOperations } from "../db/comments";
+
+const router = Router();
+
+router.get("/", async (req, res) => {
+    try {
+        const comments = await commentOperations.findAll();
+        res.json(comments);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch comments" });
+    }
+});
+
+// Add other routes...
+
+export const commentsRouter = router;
+
+Copy
+
+Insert at cursor
+typescript
+Update your server.ts to include the new routes:
+
+import { commentsRouter } from "./routes/comments";
+
+// ... other imports and setup ...
+
+app.use("/api/comments", commentsRouter);
+
+Copy
+
+Insert at cursor
+typescript
+Key points to remember:
+
+Always create the entity first
+
+Generate migrations instead of manually writing them
+
+Keep synchronize: false in production
+
+Run migrations as part of your deployment process
+
+Test migrations both up and down to ensure they work correctly
+
+Keep your migration files in version control
+
+If you need to make changes to an existing table, follow the same process: modify the entity, generate a new migration, and run it. TypeORM will create the appropriate ALTER TABLE statements.

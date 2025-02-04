@@ -1,0 +1,46 @@
+Two main components:
+
+    Esch-list component
+
+    Support-list component
+
+    Navigation links in a div container at the top for switching between pages
+
+Teams component with CRUD operations using:
+
+    SQLite database
+
+    TypeORM
+
+    Schema with:
+
+        uuid-4:8 for id
+
+        teamname
+
+        author
+
+        createdon
+
+        updatedon
+
+        isActive (boolean)
+
+    List view with add/delete buttons
+
+    Add/edit screen for each row
+
+The options-list and shared components have been removed from the requirements.
+
+Would you like me to help you with:
+
+    Setting up the initial Angular project structure
+
+    Creating the Express.js backend with SQLite/TypeORM
+
+    Implementing the navigation and components
+
+    Setting up the CRUD operations for the Teams component
+
+Which part would you like to start with
+

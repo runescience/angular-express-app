@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router'; // Add this import
+import { RolesService } from './role/roles.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { EschListComponent } from './esch-list/esch-list.component';
@@ -51,9 +52,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     RouterModule,
     AppRoutingModule,
     ReactiveFormsModule
- 
+
   ],
-  providers: [],
+  providers: [RolesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

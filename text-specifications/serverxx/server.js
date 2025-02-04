@@ -1,26 +1,26 @@
 // server.js
-const express = require('express');
-const cors = require('cors');
-const sqlite3 = require('sqlite3').verbose();
-const { v4: uuidv4 } = require('uuid');
+const express = require("express");
+const cors = require("cors");
+const sqlite3 = require("sqlite3").verbose();
+const { v4: uuidv4 } = require("uuid");
 
 const app = express();
 
 // Middleware
-app.use(cors());  // Enable CORS - only need this once
-app.use(express.json());  // Parse JSON bodies - only need this once
+app.use(cors()); // Enable CORS - only need this once
+app.use(express.json()); // Parse JSON bodies - only need this once
 
 // Basic route
-app.get('/api', (req, res) => {
-    res.json({ message: 'Welcome to the Teams API' });
+app.get("/api", (req, res) => {
+    res.json({ message: "Welcome to the Teams API" });
 });
 
 // Create SQLite database connection
-const db = new sqlite3.Database('teams.db', (err) => {
+const db = new sqlite3.Database("teams.db", (err) => {
     if (err) {
-        console.error('Error connecting to database:', err);
+        console.error("Error connecting to database:", err);
     } else {
-        console.log('Connected to SQLite database');
+        console.log("Connected to SQLite database");
         // Create teams table if it doesn't exist
         db.run(`
             CREATE TABLE IF NOT EXISTS teams (
@@ -32,7 +32,6 @@ const db = new sqlite3.Database('teams.db', (err) => {
                 isActive INTEGER DEFAULT 1
             )
         `);
-
 
         // ==========================
         // Create roles table if it doesn't exist
@@ -47,6 +46,7 @@ const db = new sqlite3.Database('teams.db', (err) => {
             )
         `);
 
+        // ===============================
         // Create option lists table if it doesn't exist
         db.run(`
             CREATE TABLE IF NOT EXISTS list_options (
@@ -63,12 +63,14 @@ const db = new sqlite3.Database('teams.db', (err) => {
     }
 });
 
+// ========================
+// CRUD endpoints
 // GET all teams
-app.get('/api/teams', (req, res) => {
-    db.all('SELECT * FROM teams', [], (err, rows) => {
+app.get("/api/teams", (req, res) => {
+    db.all("SELECT * FROM teams", [], (err, rows) => {
         if (err) {
             console.error(err);
-            res.status(500).json({ error: 'Internal server error' });
+            res.status(500).json({ error: "Internal server error" });
             return;
         }
         res.json(rows);
@@ -76,15 +78,15 @@ app.get('/api/teams', (req, res) => {
 });
 
 // GET single team
-app.get('/api/teams/:id', (req, res) => {
-    db.get('SELECT * FROM teams WHERE id = ?', [req.params.id], (err, row) => {
+app.get("/api/teams/:id", (req, res) => {
+    db.get("SELECT * FROM teams WHERE id = ?", [req.params.id], (err, row) => {
         if (err) {
             console.error(err);
-            res.status(500).json({ error: 'Internal server error' });
+            res.status(500).json({ error: "Internal server error" });
             return;
         }
         if (!row) {
-            res.status(404).json({ error: 'Team not found' });
+            res.status(404).json({ error: "Team not found" });
             return;
         }
         res.json(row);
@@ -92,17 +94,17 @@ app.get('/api/teams/:id', (req, res) => {
 });
 
 // POST new team
-app.post('/api/teams', (req, res) => {
+app.post("/api/teams", (req, res) => {
     const { teamName, author, isActive } = req.body;
     const id = uuidv4().substring(0, 8);
 
     db.run(
-        'INSERT INTO teams (id, teamName, author, isActive) VALUES (?, ?, ?, ?)',
+        "INSERT INTO teams (id, teamName, author, isActive) VALUES (?, ?, ?, ?)",
         [id, teamName, author, isActive ? 1 : 0],
         function (err) {
             if (err) {
                 console.error(err);
-                res.status(500).json({ error: 'Internal server error' });
+                res.status(500).json({ error: "Internal server error" });
                 return;
             }
             res.status(201).json({
@@ -111,14 +113,14 @@ app.post('/api/teams', (req, res) => {
                 author,
                 isActive,
                 createdOn: new Date(),
-                updatedOn: new Date()
+                updatedOn: new Date(),
             });
-        }
+        },
     );
 });
 
 // PUT update team
-app.put('/api/teams/:id', (req, res) => {
+app.put("/api/teams/:id", (req, res) => {
     const { teamName, author, isActive } = req.body;
 
     db.run(
@@ -129,11 +131,11 @@ app.put('/api/teams/:id', (req, res) => {
         function (err) {
             if (err) {
                 console.error(err);
-                res.status(500).json({ error: 'Internal server error' });
+                res.status(500).json({ error: "Internal server error" });
                 return;
             }
             if (this.changes === 0) {
-                res.status(404).json({ error: 'Team not found' });
+                res.status(404).json({ error: "Team not found" });
                 return;
             }
             res.json({
@@ -141,66 +143,71 @@ app.put('/api/teams/:id', (req, res) => {
                 teamName,
                 author,
                 isActive,
-                updatedOn: new Date()
+                updatedOn: new Date(),
             });
-        }
+        },
     );
 });
 
 // DELETE team
-app.delete('/api/teams/:id', (req, res) => {
-    db.run('DELETE FROM teams WHERE id = ?', [req.params.id], function (err) {
+app.delete("/api/teams/:id", (req, res) => {
+    db.run("DELETE FROM teams WHERE id = ?", [req.params.id], function (err) {
         if (err) {
             console.error(err);
-            res.status(500).json({ error: 'Internal server error' });
+            res.status(500).json({ error: "Internal server error" });
             return;
         }
         if (this.changes === 0) {
-            res.status(404).json({ error: 'Team not found' });
+            res.status(404).json({ error: "Team not found" });
             return;
         }
         res.status(204).send();
     });
 });
-
+// ======================================
+// Endpoint to get all
 // Option Lists CRUD endpoints
-app.get('/api/option-lists', (req, res) => {
-    db.all('SELECT * FROM list_options', [], (err, rows) => {
+app.get("/api/option-lists", (req, res) => {
+    db.all("SELECT * FROM list_options", [], (err, rows) => {
         if (err) {
             console.error(err);
-            res.status(500).json({ error: 'Internal server error' });
+            res.status(500).json({ error: "Internal server error" });
             return;
         }
         res.json(rows);
     });
 });
 
-app.get('/api/option-lists/:id', (req, res) => {
-    db.get('SELECT * FROM list_options WHERE id = ?', [req.params.id], (err, row) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: 'Internal server error' });
-            return;
-        }
-        if (!row) {
-            res.status(404).json({ error: 'Option list not found' });
-            return;
-        }
-        res.json(row);
-    });
+app.get("/api/option-lists/:id", (req, res) => {
+    db.get(
+        "SELECT * FROM list_options WHERE id = ?",
+        [req.params.id],
+        (err, row) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: "Internal server error" });
+                return;
+            }
+            if (!row) {
+                res.status(404).json({ error: "Option list not found" });
+                return;
+            }
+            res.json(row);
+        },
+    );
 });
 
-app.post('/api/option-lists', (req, res) => {
+app.post("/api/option-lists", (req, res) => {
     const { name, list_data, version, supercedes, author } = req.body;
     const id = uuidv4().substring(0, 8);
 
     db.run(
-        'INSERT INTO list_options (id, name, list_data, version, supercedes, author) VALUES (?, ?, ?, ?, ?, ?)',
+        "INSERT INTO list_options (id, name, list_data, version, supercedes, author) VALUES (?, ?, ?, ?, ?, ?)",
         [id, name, list_data, version, supercedes, author],
         function (err) {
             if (err) {
                 console.error(err);
-                res.status(500).json({ error: 'Internal server error' });
+                res.status(500).json({ error: "Internal server error" });
                 return;
             }
             res.status(201).json({
@@ -211,13 +218,13 @@ app.post('/api/option-lists', (req, res) => {
                 supercedes,
                 author,
                 createdOn: new Date(),
-                updatedOn: new Date()
+                updatedOn: new Date(),
             });
-        }
+        },
     );
 });
 
-app.put('/api/option-lists/:id', (req, res) => {
+app.put("/api/option-lists/:id", (req, res) => {
     const { name, list_data, version, supercedes, author } = req.body;
 
     db.run(
@@ -228,11 +235,11 @@ app.put('/api/option-lists/:id', (req, res) => {
         function (err) {
             if (err) {
                 console.error(err);
-                res.status(500).json({ error: 'Internal server error' });
+                res.status(500).json({ error: "Internal server error" });
                 return;
             }
             if (this.changes === 0) {
-                res.status(404).json({ error: 'Option list not found' });
+                res.status(404).json({ error: "Option list not found" });
                 return;
             }
             res.json({
@@ -242,28 +249,36 @@ app.put('/api/option-lists/:id', (req, res) => {
                 version,
                 supercedes,
                 author,
-                updatedOn: new Date()
+                updatedOn: new Date(),
             });
-        }
+        },
     );
 });
 
-app.delete('/api/option-lists/:id', (req, res) => {
-    db.run('DELETE FROM list_options WHERE id = ?', [req.params.id], function (err) {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: 'Internal server error' });
-            return;
-        }
-        if (this.changes === 0) {
-            res.status(404).json({ error: 'Option list not found' });
-            return;
-        }
-        res.status(204).send();
-    });
+app.delete("/api/option-lists/:id", (req, res) => {
+    db.run(
+        "DELETE FROM list_options WHERE id = ?",
+        [req.params.id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: "Internal server error" });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: "Option list not found" });
+                return;
+            }
+            res.status(204).send();
+        },
+    );
 });
 
-
+// Set port and start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
 
 // ======================================
 // Endpoint to get all roles
@@ -354,8 +369,22 @@ app.put("/api/roles/:id", (req, res) => {
     );
 });
 
-// Set port and start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+// Endpoint for deleting a role
+app.delete("/api/roles/:id", (req, res) => {
+    db.run(
+        "DELETE FROM roles WHERE role_id = ?",
+        [req.params.id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: "Internal server error" });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: "Role not found" });
+                return;
+            }
+            res.status(204).send();
+        },
+    );
 });

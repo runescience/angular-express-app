@@ -1,0 +1,216 @@
+do you have a script i can run that backs up all the rows and columns into a json file?
+
+Here's a script that will backup your database tables to JSON files. This script will create a backup for each table in your database:
+
+// src/utils/backup.ts
+import { AppDataSource } from "../db/config";
+import * as fs from 'fs';
+import * as path from 'path';
+
+async function backupDatabase() {
+    try {
+        // Initialize the database connection
+        await AppDataSource.initialize();
+        
+        // Get all entities registered in DataSource
+        const entities = AppDataSource.entityMetadatas;
+        
+        // Create backup directory if it doesn't exist
+        const backupDir = path.join(__dirname, '../backups', new Date().toISOString().split('T')[0]);
+        if (!fs.existsSync(backupDir)) {
+            fs.mkdirSync(backupDir, { recursive: true });
+        }
+
+        // Backup each entity
+        for (const entity of entities) {
+            console.log(`Backing up ${entity.name}...`);
+            
+            // Get the repository
+            const repository = AppDataSource.getRepository(entity.name);
+            
+            // Fetch all records
+            const data = await repository.find({
+                relations: entity.relations.map(rel => rel.propertyName)
+            });
+            
+            // Write to JSON file
+            const fileName = path.join(backupDir, `${entity.name}.json`);
+            fs.writeFileSync(
+                fileName,
+                JSON.stringify(data, null, 2)
+            );
+            
+            console.log(`✓ Backed up ${data.length} records from ${entity.name}`);
+        }
+
+        console.log('Backup completed successfully!');
+        
+    } catch (error) {
+        console.error('Backup failed:', error);
+    } finally {
+        // Close the database connection
+        await AppDataSource.destroy();
+    }
+}
+
+// Add a restore function as well
+async function restoreDatabase(backupDate: string) {
+    try {
+        // Initialize the database connection
+        await AppDataSource.initialize();
+        
+        const backupDir = path.join(__dirname, '../backups', backupDate);
+        
+        if (!fs.existsSync(backupDir)) {
+            throw new Error(`No backup found for date ${backupDate}`);
+        }
+
+        // Get all backup files
+        const files = fs.readdirSync(backupDir);
+
+        // Restore each file
+        for (const file of files) {
+            const entityName = path.basename(file, '.json');
+            console.log(`Restoring ${entityName}...`);
+
+            // Read backup file
+            const data = JSON.parse(
+                fs.readFileSync(path.join(backupDir, file), 'utf8')
+            );
+
+            // Get the repository
+            const repository = AppDataSource.getRepository(entityName);
+
+            // Clear existing data
+            await repository.clear();
+
+            // Insert backup data
+            if (data.length > 0) {
+                await repository.save(data);
+            }
+
+            console.log(`✓ Restored ${data.length} records to ${entityName}`);
+        }
+
+        console.log('Restore completed successfully!');
+        
+    } catch (error) {
+        console.error('Restore failed:', error);
+    } finally {
+        // Close the database connection
+        await AppDataSource.destroy();
+    }
+}
+
+// Add these scripts to package.json
+const addScripts = () => {
+    console.log(`
+Add these scripts to your package.json:
+
+{
+  "scripts": {
+    "backup": "ts-node src/utils/backup.ts backup",
+    "restore": "ts-node src/utils/backup.ts restore"
+  }
+}
+    `);
+}
+
+// Handle command line arguments
+const command = process.argv[2];
+const date = process.argv[3];
+
+if (command === 'backup') {
+    backupDatabase();
+} else if (command === 'restore' && date) {
+    restoreDatabase(date);
+} else if (command === 'help' || !command) {
+    console.log(`
+Usage:
+  npm run backup              # Create a new backup
+  npm run restore 2023-12-31  # Restore from specific date
+    `);
+} else {
+    console.error('Invalid command or missing date for restore');
+}
+
+Copy
+
+Insert at cursor
+typescript
+To use this script:
+
+Create the file at src/utils/backup.ts
+
+Add these scripts to your package.json:
+
+{
+  "scripts": {
+    "backup": "ts-node src/utils/backup.ts backup",
+    "restore": "ts-node src/utils/backup.ts restore"
+  }
+}
+
+Copy
+
+Insert at cursor
+json
+Run the backup:
+
+npm run backup
+
+Copy
+
+Insert at cursor
+bash
+This will:
+
+Create a backup folder with today's date
+
+Export each table to its own JSON file
+
+Include all relationships
+
+Create human-readable JSON files
+
+To restore from a backup:
+
+npm run restore 2023-12-31
+
+Copy
+
+Insert at cursor
+bash
+The backups will be stored in src/backups/[date]/[tablename].json
+
+Features of this backup script:
+
+Creates dated backups
+
+Handles relationships between tables
+
+Pretty-prints JSON for readability
+
+Includes restore functionality
+
+Creates separate files for each table
+
+Handles errors gracefully
+
+Properly closes database connections
+
+Includes command-line interface
+
+Remember to:
+
+Keep your backups secure as they contain your data
+
+Test the restore functionality in a safe environment first
+
+Consider adding the backup directory to your .gitignore if you don't want to commit backups
+
+Add error handling specific to your needs
+
+Consider adding compression for large datasets
+
+This provides a simple way to create JSON backups of your TypeORM database that you can version control or store elsewhere for safekeeping

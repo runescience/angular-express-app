@@ -1,1 +1,60 @@
+<!-- src/app/role/role.component.html -->
+<div class="roles-container">
+    <button (click)="openModal()" class="add-role-btn">Add New Role</button>
+
+    <div class="roles-list">
+        <h2>Roles List</h2>
+        <div *ngIf="loading" class="loading">Loading...</div>
+        <table *ngIf="!loading && roles.length > 0">
+            <thead>
+                <tr>
+                    <th>Role ID</th>
+                    <th>Role Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let role of roles">
+                    <td>{{ role.role_id }}</td>
+                    <td>{{ role.role_name }}</td>
+                    <td>{{ role.description || 'N/A' }}</td>
+                    <td>{{ role.is_active ? 'Active' : 'Inactive' }}</td>
+                    <td>
+                        <button (click)="editRole(role)">Edit</button>
+                        <button (click)="deleteRole(role.role_id)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div *ngIf="!loading && roles.length === 0">No roles found</div>
+    </div>
+
+    <div class="modal" [class.show]="isModalOpen">
+        <div class="modal-overlay" (click)="closeModal()"></div>
+        <div class="modal-content">
+            <form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
+                <h2>{{ isEditing ? 'Edit Role' : 'Add New Role' }}</h2>
+
+                <div>
+                    <label for="role_name">Role Name:</label>
+                    <input id="role_name" formControlName="role_name">
+                </div>
+                <div>
+                    <label for="description">Description:</label>
+                    <input id="description" formControlName="description">
+                </div>
+                <div>
+                    <label>
+                        <input type="checkbox" formControlName="is_active"> Active
+                    </label>
+                </div>
+
+                <button type="submit">{{ isEditing ? 'Update' : 'Add' }}</button>
+                <button type="button" (click)="closeModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
 <p>roles works!</p>
