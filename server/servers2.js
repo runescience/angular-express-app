@@ -158,6 +158,170 @@ app.get('/api', (req, res) => {
     res.json({ message: 'Welcome to the Users API' });
 });
 
+// Question Types endpoints
+app.get('/api/question-types', (req, res) => {
+    db.all('SELECT * FROM question_types', [], (err, rows) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        res.json(rows);
+    });
+});
+
+app.get('/api/question-types/:id', (req, res) => {
+    db.get('SELECT * FROM question_types WHERE question_type_id = ?', [req.params.id], (err, row) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        if (!row) {
+            res.status(404).json({ error: 'Question type not found' });
+            return;
+        }
+        res.json(row);
+    });
+});
+
+app.post('/api/question-types', (req, res) => {
+    const { type, has_regex, regex_str, has_options, options_str, has_supplemental, supplemental_str, author } = req.body;
+    const question_type_id = uuidv4().substring(0, 8);
+
+    db.run(
+        `INSERT INTO question_types (
+            question_type_id, type, has_regex, regex_str, has_options, 
+            options_str, has_supplemental, supplemental_str, author
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [question_type_id, type, has_regex, regex_str, has_options, options_str, has_supplemental, supplemental_str, author],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            res.status(201).json({
+                question_type_id,
+                type,
+                has_regex,
+                regex_str,
+                has_options,
+                options_str,
+                has_supplemental,
+                supplemental_str,
+                author
+            });
+        }
+    );
+});
+
+// Questions endpoints
+app.get('/api/questions', (req, res) => {
+    db.all('SELECT * FROM questions', [], (err, rows) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        res.json(rows);
+    });
+});
+
+app.get('/api/questions/:id', (req, res) => {
+    db.get('SELECT * FROM questions WHERE question_id = ?', [req.params.id], (err, row) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        if (!row) {
+            res.status(404).json({ error: 'Question not found' });
+            return;
+        }
+        res.json(row);
+    });
+});
+
+app.post('/api/questions', (req, res) => {
+    const { question_text, question_help, question_type_id, author } = req.body;
+    const question_id = uuidv4().substring(0, 8);
+
+    db.run(
+        'INSERT INTO questions (question_id, question_text, question_help, question_type_id, author) VALUES (?, ?, ?, ?, ?)',
+        [question_id, question_text, question_help, question_type_id, author],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            res.status(201).json({
+                question_id,
+                question_text,
+                question_help,
+                question_type_id,
+                author,
+                created_at: new Date(),
+                updated_at: new Date()
+            });
+        }
+    );
+});
+
+// Workflow Templates endpoints
+app.get('/api/workflow-templates', (req, res) => {
+    db.all('SELECT * FROM workflow_templates', [], (err, rows) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        res.json(rows);
+    });
+});
+
+app.get('/api/workflow-templates/:id', (req, res) => {
+    db.get('SELECT * FROM workflow_templates WHERE id = ?', [req.params.id], (err, row) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        if (!row) {
+            res.status(404).json({ error: 'Workflow template not found' });
+            return;
+        }
+        res.json(row);
+    });
+});
+
+app.post('/api/workflow-templates', (req, res) => {
+    const { title, role_ids, question_ids, author } = req.body;
+    const id = uuidv4().substring(0, 8);
+
+    db.run(
+        'INSERT INTO workflow_templates (id, title, role_ids, question_ids, author) VALUES (?, ?, ?, ?, ?)',
+        [id, title, role_ids, question_ids, author],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            res.status(201).json({
+                id,
+                title,
+                role_ids,
+                question_ids,
+                author,
+                created_at: new Date(),
+                updated_at: new Date()
+            });
+        }
+    );
+});
+
 // Set port and start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
