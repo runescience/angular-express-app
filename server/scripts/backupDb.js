@@ -9,15 +9,15 @@ const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const path = require('path');
 
-// Print warning message
-console.log('\x1b[33m%s\x1b[0m', 'WARNING: This script must be run from the directory where teams.db resides!');
-console.log();
-
-// Check if database file exists in current directory
+// Check if database file exists in current directory before proceeding
 if (!fs.existsSync('teams.db')) {
     console.error('\x1b[31m%s\x1b[0m', 'Error: teams.db not found in current directory');
     process.exit(1);
 }
+
+// Print warning message
+console.log('\x1b[33m%s\x1b[0m', 'WARNING: This script must be run from the directory where teams.db resides!');
+console.log();
 
 // Create backup directory if it doesn't exist
 const backupDir = path.join(__dirname, 'backups');
