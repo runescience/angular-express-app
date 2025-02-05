@@ -18,6 +18,19 @@ const db = new sqlite3.Database('teams.db', (err) => {
     } else {
         console.log('Connected to SQLite database');
 
+        // Create internal_messages table
+        db.run(`
+            CREATE TABLE IF NOT EXISTS internal_messages (
+                id TEXT PRIMARY KEY,
+                to_user_id TEXT NOT NULL,
+                subject TEXT NOT NULL,
+                content TEXT NOT NULL,
+                is_read INTEGER DEFAULT 0,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (to_user_id) REFERENCES users (user_id)
+            )
+        `);
+
         // Create option_lists table
         db.run(`
             CREATE TABLE IF NOT EXISTS option_lists (
@@ -197,6 +210,103 @@ app.post('/api/events', (req, res) => {
             });
         }
     );
+});
+
+// Internal Messages CRUD endpoints
+app.get('/api/internal-messages', (req, res) => {
+    db.all('SELECT * FROM internal_messages', [], (err, rows) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        res.json(rows);
+    });
+});
+
+app.get('/api/internal-messages/:id', (req, res) => {
+    db.get('SELECT * FROM internal_messages WHERE id = ?', [req.params.id], (err, row) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        if (!row) {
+            res.status(404).json({ error: 'Message not found' });
+            return;
+        }
+        res.json(row);
+    });
+});
+
+app.get('/api/users/:userId/messages', (req, res) => {
+    db.all('SELECT * FROM internal_messages WHERE to_user_id = ?', [req.params.userId], (err, rows) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        res.json(rows);
+    });
+});
+
+app.post('/api/internal-messages', (req, res) => {
+    const { to_user_id, subject, content } = req.body;
+    const id = uuidv4().substring(0, 8);
+
+    db.run(
+        'INSERT INTO internal_messages (id, to_user_id, subject, content) VALUES (?, ?, ?, ?)',
+        [id, to_user_id, subject, content],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            res.status(201).json({
+                id,
+                to_user_id,
+                subject,
+                content,
+                is_read: 0,
+                created_at: new Date()
+            });
+        }
+    );
+});
+
+app.put('/api/internal-messages/:id/read', (req, res) => {
+    db.run(
+        'UPDATE internal_messages SET is_read = 1 WHERE id = ?',
+        [req.params.id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'Message not found' });
+                return;
+            }
+            res.json({ message: 'Message marked as read' });
+        }
+    );
+});
+
+app.delete('/api/internal-messages/:id', (req, res) => {
+    db.run('DELETE FROM internal_messages WHERE id = ?', [req.params.id], function (err) {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        if (this.changes === 0) {
+            res.status(404).json({ error: 'Message not found' });
+            return;
+        }
+        res.status(204).send();
+    });
 });
 
 // Set port and start server
