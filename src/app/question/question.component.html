@@ -1,1 +1,97 @@
-<p>question works!</p>
+
+<div class="questions-container">
+    <button (click)="openModal()" class="add-question-btn">Add New Question</button>
+
+    <div class="questions-list">
+        <h2>Questions List</h2>
+        <div *ngIf="loading" class="loading">Loading...</div>
+        <table *ngIf="!loading && questions.length > 0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Question Text</th>
+                    <th>Help Text</th>
+                    <th>Type ID</th>
+                    <th>Author</th>
+                    <th>Created At</th>
+                    <th>Updated At</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let question of questions">
+                    <td>{{ question.question_id }}</td>
+                    <td>{{ question.question_text }}</td>
+                    <td>{{ question.question_help }}</td>
+                    <td>{{ question.question_type_id }}</td>
+                    <td>{{ question.author }}</td>
+                    <td>{{ question.created_at | date }}</td>
+                    <td>{{ question.updated_at | date }}</td>
+                    <td>{{ question.is_active ? 'Active' : 'Inactive' }}</td>
+                    <td>
+                        <button (click)="editQuestion(question)" [disabled]="loading">Edit</button>
+                        <button (click)="deleteQuestion(question.question_id)" [disabled]="loading">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div *ngIf="!loading && questions.length === 0" class="no-data">
+            No questions found
+        </div>
+    </div>
+
+    <div class="modal" [class.show]="isModalOpen">
+        <div class="modal-overlay" (click)="closeModal()"></div>
+        <div class="modal-content">
+            <form [formGroup]="questionForm" (ngSubmit)="onSubmit()" class="question-form">
+                <h2>{{ isEditing ? 'Edit Question' : 'Add New Question' }}</h2>
+
+                <div class="form-group">
+                    <label for="question_text">Question Text:</label>
+                    <input id="question_text" type="text" formControlName="question_text">
+                    <div *ngIf="questionForm.get('question_text')?.invalid && questionForm.get('question_text')?.touched" class="error-text">
+                        Question text is required
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="question_help">Help Text:</label>
+                    <input id="question_help" type="text" formControlName="question_help">
+                </div>
+
+                <div class="form-group">
+                    <label for="question_type_id">Question Type ID:</label>
+                    <input id="question_type_id" type="text" formControlName="question_type_id">
+                    <div *ngIf="questionForm.get('question_type_id')?.invalid && questionForm.get('question_type_id')?.touched" class="error-text">
+                        Question type ID is required
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="author">Author:</label>
+                    <input id="author" type="text" formControlName="author">
+                    <div *ngIf="questionForm.get('author')?.invalid && questionForm.get('author')?.touched" class="error-text">
+                        Author is required
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" formControlName="is_active">
+                        Active
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" [disabled]="!questionForm.valid || loading">
+                        {{ isEditing ? 'Update' : 'Add' }} Question
+                    </button>
+                    <button type="button" (click)="closeModal()" [disabled]="loading">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
