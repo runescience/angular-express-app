@@ -269,6 +269,56 @@ app.post('/api/questions', (req, res) => {
     );
 });
 
+
+// Update a question
+app.put('/api/questions/:id', (req, res) => {
+    const { question_text, question_help, question_type_id, author } = req.body;
+    const { id } = req.params;
+
+    db.run(
+        `UPDATE questions
+         SET question_text = ?, question_help = ?, question_type_id = ?, author = ?, updated_at = CURRENT_TIMESTAMP
+         WHERE question_id = ?`,
+        [question_text, question_help, question_type_id, author, id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'Question not found' });
+                return;
+            }
+            res.status(200).json({ message: 'Question updated successfully' });
+        }
+    );
+});
+
+// Delete a question
+app.delete('/api/questions/:id', (req, res) => {
+    const { id } = req.params;
+
+    db.run(
+        'DELETE FROM questions WHERE question_id = ?',
+        [id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'Question not found' });
+                return;
+            }
+            res.status(200).json({ message: 'Question deleted successfully' });
+        }
+    );
+});
+
+
+
 // Workflow Templates endpoints
 app.get('/api/workflow-templates', (req, res) => {
     db.all('SELECT * FROM workflow_templates', [], (err, rows) => {
@@ -321,6 +371,159 @@ app.post('/api/workflow-templates', (req, res) => {
         }
     );
 });
+
+// Update a workflow template
+app.put('/api/workflow-templates/:id', (req, res) => {
+    const { title, role_ids, question_ids, author } = req.body;
+    const { id } = req.params;
+
+    db.run(
+        `UPDATE workflow_templates
+         SET title = ?, role_ids = ?, question_ids = ?, author = ?, updated_at = CURRENT_TIMESTAMP
+         WHERE id = ?`,
+        [title, role_ids, question_ids, author, id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'Workflow template not found' });
+                return;
+            }
+            res.status(200).json({ message: 'Workflow template updated successfully' });
+        }
+    );
+});
+
+// Delete a workflow template
+app.delete('/api/workflow-templates/:id', (req, res) => {
+    const { id } = req.params;
+
+    db.run(
+        'DELETE FROM workflow_templates WHERE id = ?',
+        [id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'Workflow template not found' });
+                return;
+            }
+            res.status(200).json({ message: 'Workflow template deleted successfully' });
+        }
+    );
+});
+
+
+// Users endpoints
+
+// Get all users
+app.get('/api/users', (req, res) => {
+    db.all('SELECT * FROM users', [], (err, rows) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        res.json(rows);
+    });
+});
+
+// Get user by ID
+app.get('/api/users/:id', (req, res) => {
+    db.get('SELECT * FROM users WHERE user_id = ?', [req.params.id], (err, row) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        if (!row) {
+            res.status(404).json({ error: 'User not found' });
+            return;
+        }
+        res.json(row);
+    });
+});
+
+// Create a new user
+app.post('/api/users', (req, res) => {
+    const { username, email, password_hash, is_active } = req.body;
+    const user_id = uuidv4().substring(0, 8);
+
+    db.run(
+        'INSERT INTO users (user_id, username, email, password_hash, is_active) VALUES (?, ?, ?, ?, ?)',
+        [user_id, username, email, password_hash, is_active],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            res.status(201).json({
+                user_id,
+                username,
+                email,
+                is_active,
+                created_at: new Date(),
+                updated_at: new Date()
+            });
+        }
+    );
+});
+
+// Update a user
+app.put('/api/users/:id', (req, res) => {
+    const { username, email, password_hash, is_active } = req.body;
+    const { id } = req.params;
+
+    db.run(
+        `UPDATE users
+         SET username = ?, email = ?, password_hash = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP
+         WHERE user_id = ?`,
+        [username, email, password_hash, is_active, id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'User not found' });
+                return;
+            }
+            res.status(200).json({ message: 'User updated successfully' });
+        }
+    );
+});
+
+// Delete a user
+app.delete('/api/users/:id', (req, res) => {
+    const { id } = req.params;
+
+    db.run(
+        'DELETE FROM users WHERE user_id = ?',
+        [id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'User not found' });
+                return;
+            }
+            res.status(200).json({ message: 'User deleted successfully' });
+        }
+    );
+});
+
+
 
 // Set port and start server
 const PORT = process.env.PORT || 3000;
