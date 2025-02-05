@@ -1,21 +1,26 @@
 // addOptionList.js
-const axios = require('axios');
-const { stringify } = require('uuid');
+const axios = require("axios");
+const { stringify } = require("uuid");
 
 const newOptionList = {
-    name: 'SampleOptions3csv',
-    list_data: 'sand,green,beige',
-    version: '1.0',
-    supercedes: '0.7',
-    author: 'Author Name',
+    name: "colors2",
+    list_data: "salmon,green,beige",
+    version: "1.0",
+    supercedes: "0.7",
+    author: "Author Name",
+    is_active: 0,
 };
 
-axios.post('http://localhost:3000/api/option-lists', newOptionList)
-    .then(response => {
-        console.log('Option List added successfully:', response.data);
+axios
+    .post("http://localhost:3000/api/option-lists", newOptionList)
+    .then((response) => {
+        console.log("Option List added successfully:", response.data);
     })
-    .catch(error => {
-        console.error('Error adding option list:', error.response ? error.response.data : error.message);
+    .catch((error) => {
+        console.error(
+            "Error adding option list:",
+            error.response ? error.response.data : error.message,
+        );
     });
 
 /****************
@@ -42,6 +47,6 @@ curl -X POST http://localhost:3000/api/option-lists \
 //             "supercedes": "xxxsupercedes",
 //                 "author": "xxxauthname"
 // }'
-// Instead of listnamexxx, csvdata, xxxversion, xxxsupercedes, xxxauthname  
+// Instead of listnamexxx, csvdata, xxxversion, xxxsupercedes, xxxauthname
 
 // use a script parameter.csvdata is comma separated values and is long string
