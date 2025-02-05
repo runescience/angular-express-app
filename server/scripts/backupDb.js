@@ -12,7 +12,7 @@ const path = require('path');
 // Check if database file exists in current directory before proceeding
 if (!fs.existsSync('teams.db')) {
     console.error('\x1b[31m%s\x1b[0m', 'Error: teams.db not found in current directory');
-    process.exit(1);
+    exit(1);
 }
 
 // Print warning message

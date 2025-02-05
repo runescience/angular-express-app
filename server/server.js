@@ -2,14 +2,17 @@
 const express = require("express");
 const cors = require("cors");
 const sqlite3 = require("sqlite3").verbose();
-const fs = require('fs');
+const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 
 const app = express();
 
 // Check if teams.db exists in current directory
-if (!fs.existsSync('teams.db')) {
-    console.log('\x1b[33m%s\x1b[0m', 'WARNING: This script must be run from the directory where teams.db resides!');
+if (!fs.existsSync("teams.db")) {
+    console.log(
+        "\x1b[33m%s\x1b[0m",
+        "WARNING: This script must be run from the directory where teams.db resides!",
+    );
     process.exit(1);
 }
 
@@ -18,7 +21,7 @@ app.use(cors()); // Enable CORS - only need this once
 app.use(express.json()); // Parse JSON bodies - only need this once
 
 // Import cases module
-const casesModule = require('./cases');
+const casesModule = require("./cases");
 
 // Basic route
 app.get("/api", (req, res) => {
@@ -26,55 +29,55 @@ app.get("/api", (req, res) => {
 });
 
 // Cases endpoints
-app.post('/api/cases', async (req, res) => {
+app.post("/api/cases", async (req, res) => {
     try {
         const result = await casesModule.createCase(req.body);
         res.status(201).json(result);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
-app.get('/api/cases/:id', async (req, res) => {
+app.get("/api/cases/:id", async (req, res) => {
     try {
         const result = await casesModule.getCaseById(req.params.id);
         if (!result) {
-            res.status(404).json({ error: 'Case not found' });
+            res.status(404).json({ error: "Case not found" });
             return;
         }
         res.json(result);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
-app.put('/api/cases/:id', async (req, res) => {
+app.put("/api/cases/:id", async (req, res) => {
     try {
         const result = await casesModule.updateCase(req.params.id, req.body);
         if (!result) {
-            res.status(404).json({ error: 'Case not found' });
+            res.status(404).json({ error: "Case not found" });
             return;
         }
-        res.json({ message: 'Case updated successfully' });
+        res.json({ message: "Case updated successfully" });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
-app.delete('/api/cases/:id', async (req, res) => {
+app.delete("/api/cases/:id", async (req, res) => {
     try {
         const result = await casesModule.deleteCase(req.params.id);
         if (!result) {
-            res.status(404).json({ error: 'Case not found' });
+            res.status(404).json({ error: "Case not found" });
             return;
         }
         res.status(204).send();
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
@@ -125,7 +128,6 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 is_active INTEGER DEFAULT 1
             )
         `);
-
 
         // Create users table
         db.run(`
@@ -179,6 +181,7 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 author TEXT,
+                is_active INTEGER DEFAULT 1,
                 FOREIGN KEY (question_type_id) REFERENCES question_types (question_type_id)
             )
         `);
@@ -192,6 +195,7 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 question_ids TEXT NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                is_active INTEGER DEFAULT 1,
                 author TEXT NOT NULL
             )
         `);
@@ -210,6 +214,7 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 user_id TEXT,
                 author_username TEXT NOT NULL,
                 status TEXT DEFAULT 'active',
+                is_active INTEGER DEFAULT 1,
                 FOREIGN KEY (workflow_id) REFERENCES workflow_templates (id),
                 FOREIGN KEY (user_id) REFERENCES users (user_id)
             )
@@ -225,6 +230,8 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 question_id TEXT,
                 case_id TEXT NOT NULL,
+                is_active INTEGER DEFAULT 1,
+
                 FOREIGN KEY (replying_to_id) REFERENCES comments (comment_id),
                 FOREIGN KEY (question_id) REFERENCES questions (question_id),
                 FOREIGN KEY (case_id) REFERENCES cases (id)
@@ -242,6 +249,8 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 user_id TEXT,
                 answer_text TEXT NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                is_active INTEGER DEFAULT 1,
+
                 FOREIGN KEY (case_id) REFERENCES cases (id),
                 FOREIGN KEY (workflow_id) REFERENCES workflow_templates (id),
                 FOREIGN KEY (question_id) REFERENCES questions (question_id),
@@ -266,6 +275,7 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 workflow_template_id TEXT,
                 approve_role_id TEXT,
                 deny_role_id TEXT,
+                is_active INTEGER DEFAULT 1,
                 FOREIGN KEY (workflow_template_id) REFERENCES workflow_templates (id),
                 FOREIGN KEY (approve_role_id) REFERENCES roles (role_id),
                 FOREIGN KEY (deny_role_id) REFERENCES roles (role_id)
@@ -280,6 +290,7 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 subject TEXT NOT NULL,
                 content TEXT NOT NULL,
                 is_read INTEGER DEFAULT 0,
+                is_active INTEGER DEFAULT 1,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (to_user_id) REFERENCES users (user_id)
             )
@@ -294,6 +305,7 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 version TEXT,
                 supercedes TEXT,
                 author TEXT NOT NULL,
+                is_active INTEGER DEFAULT 1,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
@@ -416,9 +428,6 @@ app.delete("/api/teams/:id", (req, res) => {
     });
 });
 
-
-
-
 // Option Lists CRUD endpoints
 app.get("/api/option-lists", (req, res) => {
     db.all("SELECT * FROM list_options", [], (err, rows) => {
@@ -536,8 +545,6 @@ app.delete("/api/option-lists/:id", (req, res) => {
         },
     );
 });
-
-
 
 // ======================================
 // Endpoint to get all roles
@@ -681,8 +688,6 @@ app.put("/api/roles/:id", (req, res) => {
     );
 });
 
-
-
 // Events CRUD endpoints
 app.get("/api/events", (req, res) => {
     db.all("SELECT * FROM events", [], (err, rows) => {
@@ -782,9 +787,6 @@ app.delete("/api/events/:id", (req, res) => {
     });
 });
 
-
-
-
 // Internal Messages CRUD endpoints
 app.get("/api/internal-messages", (req, res) => {
     db.all("SELECT * FROM internal_messages", [], (err, rows) => {
@@ -878,8 +880,6 @@ app.delete("/api/internal-messages/:id", (req, res) => {
         },
     );
 });
-
-
 
 // Users endpoints
 
@@ -983,9 +983,6 @@ app.delete("/api/users/:id", (req, res) => {
         res.status(200).json({ message: "User deleted successfully" });
     });
 });
-
-
-
 
 // Approval Stages endpoints
 app.get("/api/approval-stages", (req, res) => {
@@ -1165,8 +1162,6 @@ app.delete("/api/approval-stages/:id", (req, res) => {
     );
 });
 
-
-
 // Question Types endpoints
 app.get("/api/question-types", (req, res) => {
     db.all("SELECT * FROM question_types", [], (err, rows) => {
@@ -1247,9 +1242,6 @@ app.post("/api/question-types", (req, res) => {
         },
     );
 });
-
-
-
 
 // Questions endpoints
 app.get("/api/questions", (req, res) => {
@@ -1350,8 +1342,6 @@ app.delete("/api/questions/:id", (req, res) => {
         res.status(200).json({ message: "Question deleted successfully" });
     });
 });
-
-
 
 // Workflow Templates endpoints
 app.get("/api/workflow-templates", (req, res) => {
@@ -1456,10 +1446,6 @@ app.delete("/api/workflow-templates/:id", (req, res) => {
         });
     });
 });
-
-
-
-
 
 // Set port and start server
 const PORT = process.env.PORT || 3000;
