@@ -22,6 +22,7 @@
     "@angular/router": "^19.1.0",
     "@nestjs/common": "^11.0.7",
     "@nestjs/typeorm": "^11.0.0",
+    "@types/node": "^16.0.0",
     "@types/uuid": "^10.0.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "~7.8.0",
@@ -29,8 +30,7 @@
     "tslib": "^2.3.0",
     "typeorm": "^0.3.20",
     "uuid": "^11.0.5",
-    "zone.js": "~0.15.0",
-    "@types/node": "^16.0.0"
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.1.5",

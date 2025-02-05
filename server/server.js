@@ -220,13 +220,13 @@ app.post('/api/option-lists', (req, res) => {
 });
 
 app.put('/api/option-lists/:id', (req, res) => {
-    const { name, list_data, version, supercedes, author, is_author } = req.body;
+    const { name, list_data, version, supercedes, author, is_active } = req.body;
 
     db.run(
         `UPDATE list_options 
-         SET name = ?, list_data = ?, version = ?, supercedes = ?, author = ?, isAuthor = ?, updated_on = CURRENT_TIMESTAMP 
+         SET name = ?, list_data = ?, version = ?, supercedes = ?, author = ?, is_active = ?, updated_on = CURRENT_TIMESTAMP 
          WHERE id = ?`,
-        [name, list_data, version, supercedes, author, is_author, req.params.id],
+        [name, list_data, version, supercedes, author, is_active, req.params.id],
         function (err) {
             if (err) {
                 console.error(err);
@@ -244,7 +244,7 @@ app.put('/api/option-lists/:id', (req, res) => {
                 version,
                 supercedes,
                 author,
-                is_author,
+                is_active,
                 updated_on: new Date()
             });
         }
@@ -280,6 +280,8 @@ app.get("/api/roles", (req, res) => {
         res.json(rows);
     });
 });
+
+//Endpoint delete roles
 app.delete("/api/roles/:id", (req, res) => {
     const roleId = req.params.id;
     console.log(`[${new Date().toISOString()}] DELETE request received for role ID: ${roleId}`);
@@ -338,6 +340,7 @@ app.get("/api/roles/:id", (req, res) => {
     );
 });
 
+
 // Endpoint for creating a new role
 app.post("/api/roles", (req, res) => {
     const { role_name, description, author, is_active } = req.body;  // Add author to destructuring
@@ -367,7 +370,7 @@ app.post("/api/roles", (req, res) => {
 
 // Endpoint for updating an existing role
 app.put("/api/roles/:id", (req, res) => {
-    const { role_name, description, is_active } = req.body;
+    const { role_name, description, author, is_active } = req.body;
 
     db.run(
         `UPDATE roles 
