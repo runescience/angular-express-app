@@ -1,7 +1,17 @@
 
+/**
+ * Database Backup Script
+ * IMPORTANT: This script must be run from the directory where teams.db resides!
+ * Example usage: node backupDb.js
+ */
+
 const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const path = require('path');
+
+// Print warning message
+console.log('\x1b[33m%s\x1b[0m', 'WARNING: This script must be run from the directory where teams.db resides!');
+console.log();
 
 // Create backup directory if it doesn't exist
 const backupDir = path.join(__dirname, 'backups');
