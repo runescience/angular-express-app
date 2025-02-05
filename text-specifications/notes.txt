@@ -65,3 +65,23 @@ author TEXT
 
 use these files, to copy the structure and content into updates for the option-lists files: @teams.components.html, has list and modal form, to aid user in showing rows, and adding updating new rows. @teams.components.ts, @teams.entity.ts, @teams.interface.ts, @teams.service.ts all have strucure to implement the @question-type components. 
 
+
+
+
+
+Similar to teams component, I would like to update the question components, that support CRUD capability using sqlite, and typeorm. there is a table and endoints in @server.js already in place. 
+
+Question table:
+question_id TEXT PRIMARY KEY,
+question_text TEXT NOT NULL,
+question_help TEXT,
+question_type_id TEXT NOT NULL,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+author TEXT,
+is_active INTEGER DEFAULT 1,
+FOREIGN KEY (question_type_id) REFERENCES question_types (question_type_id)
+
+use these files, to copy the structure and content into updates for the questions files: @teams.components.html, has list and modal form, to aid user in showing rows, and adding updating new rows. @teams.components.ts, @teams.entity.ts, @teams.interface.ts, @teams.service.ts all have strucure to implement the @question components. 
+
+
