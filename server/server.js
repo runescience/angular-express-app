@@ -2,9 +2,16 @@
 const express = require("express");
 const cors = require("cors");
 const sqlite3 = require("sqlite3").verbose();
+const fs = require('fs');
 const { v4: uuidv4 } = require("uuid");
 
 const app = express();
+
+// Check if teams.db exists in current directory
+if (!fs.existsSync('teams.db')) {
+    console.log('\x1b[33m%s\x1b[0m', 'WARNING: This script must be run from the directory where teams.db resides!');
+    process.exit(1);
+}
 
 // Middleware
 app.use(cors()); // Enable CORS - only need this once
