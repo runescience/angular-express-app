@@ -13,6 +13,12 @@ const path = require('path');
 console.log('\x1b[33m%s\x1b[0m', 'WARNING: This script must be run from the directory where teams.db resides!');
 console.log();
 
+// Check if database file exists in current directory
+if (!fs.existsSync('teams.db')) {
+    console.error('\x1b[31m%s\x1b[0m', 'Error: teams.db not found in current directory');
+    process.exit(1);
+}
+
 // Create backup directory if it doesn't exist
 const backupDir = path.join(__dirname, 'backups');
 if (!fs.existsSync(backupDir)) {
