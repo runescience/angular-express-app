@@ -3,12 +3,12 @@ export interface QuestionType {
   type: string;
   is_active: boolean;
   has_regex: boolean;
-  regex_str: string | null;
+  regex_str?: string;
   has_options: boolean;
-  options_str: string | null;
+  options_str?: string;
   has_supplemental: boolean;
-  supplemental_str: string | null;
+  supplemental_str?: string;
   created_at: Date;
   updated_at: Date;
-  author: string;
+  author?: string;
 }
