@@ -1,10 +1,13 @@
-
 <div class="question-types-container">
-    <button (click)="openModal()" class="add-question-type-btn">Add New Question Type</button>
+    <button (click)="openModal()" class="add-question-type-btn">
+        Add New Question Type
+    </button>
 
     <div class="question-types-list">
         <h2>Question Types List</h2>
         <div *ngIf="loading" class="loading">Loading...</div>
+        <div *ngIf="error" class="error">{{ error }}</div>
+
         <table *ngIf="!loading && questionTypes.length > 0">
             <thead>
                 <tr>
@@ -23,94 +26,134 @@
                     <td>{{ questionType.question_type_id }}</td>
                     <td>{{ questionType.type }}</td>
                     <td>{{ questionType.author }}</td>
-                    <td>{{ questionType.has_regex ? 'Yes' : 'No' }}</td>
-                    <td>{{ questionType.has_options ? 'Yes' : 'No' }}</td>
-                    <td>{{ questionType.has_supplemental ? 'Yes' : 'No' }}</td>
-                    <td>{{ questionType.is_active ? 'Active' : 'Inactive' }}</td>
+                    <td>{{ questionType.has_regex ? "Yes" : "No" }}</td>
+                    <td>{{ questionType.has_options ? "Yes" : "No" }}</td>
+                    <td>{{ questionType.has_supplemental ? "Yes" : "No" }}</td>
                     <td>
-                        <button (click)="editQuestionType(questionType)" [disabled]="loading">Edit</button>
-                        <button (click)="deleteQuestionType(questionType.question_type_id)" [disabled]="loading">Delete</button>
+                        {{ questionType.is_active ? "Active" : "Inactive" }}
+                    </td>
+                    <td>
+                        <button
+                            (click)="editQuestionType(questionType)"
+                            [disabled]="loading"
+                        >
+                            Edit
+                        </button>
+                        <button
+                            (click)="
+                                deleteQuestionType(
+                                    questionType.question_type_id
+                                )
+                            "
+                            [disabled]="loading"
+                        >
+                            Delete
+                        </button>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <div *ngIf="!loading && questionTypes.length === 0" class="no-data">
-            No question types found
-        </div>
     </div>
 
-    <div class="modal" [class.show]="isModalOpen">
-        <div class="modal-overlay" (click)="closeModal()"></div>
+    <div *ngIf="isModalOpen" class="modal">
         <div class="modal-content">
-            <form [formGroup]="questionTypeForm" (ngSubmit)="onSubmit()" class="question-type-form">
-                <h2>{{ isEditing ? 'Edit Question Type' : 'Add New Question Type' }}</h2>
-
+            <h2>{{ isEditing ? "Edit" : "Add" }} Question Type</h2>
+            <form [formGroup]="questionTypeForm" (ngSubmit)="onSubmit()">
                 <div class="form-group">
                     <label for="type">Type:</label>
-                    <input id="type" type="text" formControlName="type">
-                    <div *ngIf="questionTypeForm.get('type')?.invalid && questionTypeForm.get('type')?.touched" class="error-text">
-                        Type is required
-                    </div>
+                    <input
+                        id="type"
+                        type="text"
+                        formControlName="type"
+                        required
+                    />
                 </div>
 
                 <div class="form-group">
                     <label for="author">Author:</label>
-                    <input id="author" type="text" formControlName="author">
-                    <div *ngIf="questionTypeForm.get('author')?.invalid && questionTypeForm.get('author')?.touched" class="error-text">
-                        Author is required
-                    </div>
+                    <input
+                        id="author"
+                        type="text"
+                        formControlName="author"
+                        required
+                    />
                 </div>
 
                 <div class="form-group">
                     <label>
-                        <input type="checkbox" formControlName="has_regex">
+                        <input type="checkbox" formControlName="has_regex" />
                         Has Regex
                     </label>
                 </div>
 
-                <div class="form-group" *ngIf="questionTypeForm.get('has_regex')?.value">
+                <div
+                    class="form-group"
+                    *ngIf="questionTypeForm.get('has_regex')?.value"
+                >
                     <label for="regex_str">Regex String:</label>
-                    <input id="regex_str" type="text" formControlName="regex_str">
+                    <input
+                        id="regex_str"
+                        type="text"
+                        formControlName="regex_str"
+                    />
                 </div>
 
                 <div class="form-group">
                     <label>
-                        <input type="checkbox" formControlName="has_options">
+                        <input type="checkbox" formControlName="has_options" />
                         Has Options
                     </label>
                 </div>
 
-                <div class="form-group" *ngIf="questionTypeForm.get('has_options')?.value">
+                <div
+                    class="form-group"
+                    *ngIf="questionTypeForm.get('has_options')?.value"
+                >
                     <label for="options_str">Options String:</label>
-                    <input id="options_str" type="text" formControlName="options_str">
+                    <input
+                        id="options_str"
+                        type="text"
+                        formControlName="options_str"
+                    />
                 </div>
 
                 <div class="form-group">
                     <label>
-                        <input type="checkbox" formControlName="has_supplemental">
+                        <input
+                            type="checkbox"
+                            formControlName="has_supplemental"
+                        />
                         Has Supplemental
                     </label>
                 </div>
 
-                <div class="form-group" *ngIf="questionTypeForm.get('has_supplemental')?.value">
+                <div
+                    class="form-group"
+                    *ngIf="questionTypeForm.get('has_supplemental')?.value"
+                >
                     <label for="supplemental_str">Supplemental String:</label>
-                    <input id="supplemental_str" type="text" formControlName="supplemental_str">
+                    <input
+                        id="supplemental_str"
+                        type="text"
+                        formControlName="supplemental_str"
+                    />
                 </div>
 
                 <div class="form-group">
                     <label>
-                        <input type="checkbox" formControlName="is_active">
-                        Active
+                        <input type="checkbox" formControlName="is_active" />
+                        Is Active
                     </label>
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" [disabled]="!questionTypeForm.valid || loading">
-                        {{ isEditing ? 'Update' : 'Add' }} Question Type
+                    <button
+                        type="submit"
+                        [disabled]="!questionTypeForm.valid || loading"
+                    >
+                        {{ isEditing ? "Update" : "Create" }}
                     </button>
-                    <button type="button" (click)="closeModal()" [disabled]="loading">
-                        Cancel
-                    </button>
+                    <button type="button" (click)="closeModal()">Cancel</button>
                 </div>
             </form>
         </div>

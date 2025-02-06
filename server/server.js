@@ -1204,15 +1204,15 @@ app.post("/api/question-types", (req, res) => {
         supplemental_str,
         author,
     } = req.body;
-    const question_type_id = uuidv4().substring(0, 8);
+    const id = uuidv4().substring(0, 8);
 
     db.run(
         `INSERT INTO question_types (
-            question_type_id, type, has_regex, regex_str, has_options, 
-            options_str, has_supplemental, supplemental_str, author
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            question_type_id, type, has_regex, regex_str, has_options, options_str, 
+            has_supplemental, supplemental_str, author, is_active
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
-            question_type_id,
+            id,
             type,
             has_regex,
             regex_str,
@@ -1221,6 +1221,7 @@ app.post("/api/question-types", (req, res) => {
             has_supplemental,
             supplemental_str,
             author,
+            true,
         ],
         function (err) {
             if (err) {
@@ -1229,7 +1230,7 @@ app.post("/api/question-types", (req, res) => {
                 return;
             }
             res.status(201).json({
-                question_type_id,
+                question_type_id: id,
                 type,
                 has_regex,
                 regex_str,
@@ -1238,7 +1239,87 @@ app.post("/api/question-types", (req, res) => {
                 has_supplemental,
                 supplemental_str,
                 author,
+                is_active: true,
+                created_at: new Date(),
+                updated_at: new Date(),
             });
+        },
+    );
+});
+
+app.put("/api/question-types/:id", (req, res) => {
+    const {
+        type,
+        has_regex,
+        regex_str,
+        has_options,
+        options_str,
+        has_supplemental,
+        supplemental_str,
+        author,
+        is_active,
+    } = req.body;
+
+    db.run(
+        `UPDATE question_types 
+         SET type = ?, has_regex = ?, regex_str = ?, has_options = ?, options_str = ?,
+         has_supplemental = ?, supplemental_str = ?, author = ?, is_active = ?,
+         updated_at = CURRENT_TIMESTAMP
+         WHERE question_type_id = ?`,
+        [
+            type,
+            has_regex,
+            regex_str,
+            has_options,
+            options_str,
+            has_supplemental,
+            supplemental_str,
+            author,
+            is_active,
+            req.params.id,
+        ],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: "Internal server error" });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: "Question type not found" });
+                return;
+            }
+            res.json({
+                question_type_id: req.params.id,
+                type,
+                has_regex,
+                regex_str,
+                has_options,
+                options_str,
+                has_supplemental,
+                supplemental_str,
+                author,
+                is_active,
+                updated_at: new Date(),
+            });
+        },
+    );
+});
+
+app.delete("/api/question-types/:id", (req, res) => {
+    db.run(
+        "DELETE FROM question_types WHERE question_type_id = ?",
+        [req.params.id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: "Internal server error" });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: "Question type not found" });
+                return;
+            }
+            res.status(204).send();
         },
     );
 });
