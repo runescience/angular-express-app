@@ -8,7 +8,7 @@ import { QuestionType } from './question-type.interface';
   providedIn: 'root'
 })
 export class QuestionTypeService {
-  private apiUrl = '/api/question-types';
+  private apiUrl = 'http://localhost:3000/api/question-types';
 
   constructor(private http: HttpClient) { }
 

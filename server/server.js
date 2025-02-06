@@ -738,9 +738,6 @@ app.get("/api/question-types/:id", (req, res) => {
 });
 
 app.post("/api/question-types", (req, res) => {
-<<<<<<< HEAD
-    const { type, has_regex, regex_str, has_options, options_str, has_supplemental, supplemental_str, author } = req.body;
-=======
     const {
         type,
         has_regex,
@@ -751,7 +748,6 @@ app.post("/api/question-types", (req, res) => {
         supplemental_str,
         author,
     } = req.body;
->>>>>>> f4483948a9e88fbd90fb9556dd0c77184403b3c3
     const id = uuidv4().substring(0, 8);
 
     db.run(
@@ -759,9 +755,6 @@ app.post("/api/question-types", (req, res) => {
             question_type_id, type, has_regex, regex_str, has_options, options_str, 
             has_supplemental, supplemental_str, author, is_active
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-<<<<<<< HEAD
-        [id, type, has_regex, regex_str, has_options, options_str, has_supplemental, supplemental_str, author, true],
-=======
         [
             id,
             type,
@@ -774,7 +767,6 @@ app.post("/api/question-types", (req, res) => {
             author,
             true,
         ],
->>>>>>> f4483948a9e88fbd90fb9556dd0c77184403b3c3
         function (err) {
             if (err) {
                 console.error(err);
@@ -792,8 +784,6 @@ app.post("/api/question-types", (req, res) => {
                 supplemental_str,
                 author,
                 is_active: true,
-<<<<<<< HEAD
-=======
                 created_at: new Date(),
                 updated_at: new Date(),
             });
@@ -928,7 +918,6 @@ app.post("/api/questions", (req, res) => {
                 question_help,
                 question_type_id,
                 author,
->>>>>>> f4483948a9e88fbd90fb9556dd0c77184403b3c3
                 created_at: new Date(),
                 updated_at: new Date()
             });

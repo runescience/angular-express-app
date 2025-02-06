@@ -33,16 +33,6 @@
                         {{ questionType.is_active ? "Active" : "Inactive" }}
                     </td>
                     <td>
-<<<<<<< HEAD
-                        <button (click)="editQuestionType(questionType)" [disabled]="loading">
-                            Edit
-                        </button>
-                        <button (click)="
-                                deleteQuestionType(
-                                    questionType.question_type_id
-                                )
-                            " [disabled]="loading">
-=======
                         <button
                             (click)="editQuestionType(questionType)"
                             [disabled]="loading"
@@ -57,7 +47,6 @@
                             "
                             [disabled]="loading"
                         >
->>>>>>> f4483948a9e88fbd90fb9556dd0c77184403b3c3
                             Delete
                         </button>
                     </td>
@@ -72,30 +61,22 @@
             <form [formGroup]="questionTypeForm" (ngSubmit)="onSubmit()">
                 <div class="form-group">
                     <label for="type">Type:</label>
-<<<<<<< HEAD
-                    <input id="type" type="text" formControlName="type" required />
-=======
                     <input
                         id="type"
                         type="text"
                         formControlName="type"
                         required
                     />
->>>>>>> f4483948a9e88fbd90fb9556dd0c77184403b3c3
                 </div>
 
                 <div class="form-group">
                     <label for="author">Author:</label>
-<<<<<<< HEAD
-                    <input id="author" type="text" formControlName="author" required />
-=======
                     <input
                         id="author"
                         type="text"
                         formControlName="author"
                         required
                     />
->>>>>>> f4483948a9e88fbd90fb9556dd0c77184403b3c3
                 </div>
 
                 <div class="form-group">
@@ -110,15 +91,11 @@
                     *ngIf="questionTypeForm.get('has_regex')?.value"
                 >
                     <label for="regex_str">Regex String:</label>
-<<<<<<< HEAD
-                    <input id="regex_str" type="text" formControlName="regex_str" />
-=======
                     <input
                         id="regex_str"
                         type="text"
                         formControlName="regex_str"
                     />
->>>>>>> f4483948a9e88fbd90fb9556dd0c77184403b3c3
                 </div>
 
                 <div class="form-group">
@@ -133,27 +110,19 @@
                     *ngIf="questionTypeForm.get('has_options')?.value"
                 >
                     <label for="options_str">Options String:</label>
-<<<<<<< HEAD
-                    <input id="options_str" type="text" formControlName="options_str" />
-=======
                     <input
                         id="options_str"
                         type="text"
                         formControlName="options_str"
                     />
->>>>>>> f4483948a9e88fbd90fb9556dd0c77184403b3c3
                 </div>
 
                 <div class="form-group">
                     <label>
-<<<<<<< HEAD
-                        <input type="checkbox" formControlName="has_supplemental" />
-=======
                         <input
                             type="checkbox"
                             formControlName="has_supplemental"
                         />
->>>>>>> f4483948a9e88fbd90fb9556dd0c77184403b3c3
                         Has Supplemental
                     </label>
                 </div>
@@ -163,15 +132,11 @@
                     *ngIf="questionTypeForm.get('has_supplemental')?.value"
                 >
                     <label for="supplemental_str">Supplemental String:</label>
-<<<<<<< HEAD
-                    <input id="supplemental_str" type="text" formControlName="supplemental_str" />
-=======
                     <input
                         id="supplemental_str"
                         type="text"
                         formControlName="supplemental_str"
                     />
->>>>>>> f4483948a9e88fbd90fb9556dd0c77184403b3c3
                 </div>
 
                 <div class="form-group">
@@ -182,14 +147,10 @@
                 </div>
 
                 <div class="form-actions">
-<<<<<<< HEAD
-                    <button type="submit" [disabled]="!questionTypeForm.valid || loading">
-=======
                     <button
                         type="submit"
                         [disabled]="!questionTypeForm.valid || loading"
                     >
->>>>>>> f4483948a9e88fbd90fb9556dd0c77184403b3c3
                         {{ isEditing ? "Update" : "Create" }}
                     </button>
                     <button type="button" (click)="closeModal()">Cancel</button>
