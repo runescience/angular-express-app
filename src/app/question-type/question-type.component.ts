@@ -5,10 +5,14 @@ import { QuestionType } from './question-type.interface';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
+
 @Component({
+  standalone: false,
   selector: 'app-question-type',
   templateUrl: './question-type.component.html',
-  styleUrls: ['./question-type.component.css']
+  styleUrls: ['./question-type.component.css'],
+
+
 })
 export class QuestionTypeComponent implements OnInit {
   questionTypeForm: FormGroup;

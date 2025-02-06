@@ -4,8 +4,10 @@ import { QuestionService } from './question.service';
 import { Question } from './question.interface';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NgIf } from '@angular/common';
 
 @Component({
+  standalone: false,
   selector: 'app-question',
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css']
@@ -131,7 +133,7 @@ export class QuestionComponent implements OnInit {
   private handleError(error: HttpErrorResponse, operation: 'create' | 'update' | 'delete' | 'load') {
     console.error(`Error during ${operation} operation:`, error);
     this.loading = false;
-    
+
     if (error.error instanceof ErrorEvent) {
       this.error = `Client Error: ${error.error.message}`;
     } else {

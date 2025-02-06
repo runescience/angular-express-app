@@ -12,7 +12,7 @@ import { RolesComponent } from './role/role.component';
 import { UserComponent } from './user/user.component';
 import { StagesComponent } from './stages/stages.component';
 import { OptionListsComponent } from './option-lists/option-lists.component';
-import { SelectWorkflowsComponent } from './select-workflows/select-workflows.component';
+
 import { LoginComponent } from './login/login.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 
@@ -29,7 +29,6 @@ const routes: Routes = [
   { path: 'workflow-template', component: WorkflowTemplateComponent },
   { path: 'select-workflow', component: SelectWorkflowComponent },
   { path: 'option-lists', component: OptionListsComponent },
-  { path: 'select-workflows', component: SelectWorkflowsComponent },
   { path: 'role', component: RolesComponent },
   { path: 'user', component: UserComponent },
   { path: 'stages', component: StagesComponent }

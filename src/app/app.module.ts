@@ -16,7 +16,7 @@ import { RolesComponent } from './role/role.component';
 import { UserComponent } from './user/user.component';
 import { StagesComponent } from './stages/stages.component';
 import { OptionListsComponent } from './option-lists/option-lists.component';
-import { SelectWorkflowsComponent } from './select-workflows/select-workflows.component';
+
 import { LoginComponent } from './login/login.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 
@@ -40,7 +40,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     UserComponent,
     StagesComponent,
     OptionListsComponent,
-    SelectWorkflowsComponent,
     LoginComponent,
     NotificationsComponent
   ],
