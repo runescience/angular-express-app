@@ -1,4 +1,3 @@
-
 export interface QuestionType {
   question_type_id: string;
   type: string;

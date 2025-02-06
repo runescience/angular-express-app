@@ -10,7 +10,7 @@ import { QuestionType } from './question-type.interface';
 export class QuestionTypeService {
   private apiUrl = 'http://localhost:3000/api/question-types';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllQuestionTypes(): Observable<QuestionType[]> {
     return this.http.get<QuestionType[]>(this.apiUrl);
