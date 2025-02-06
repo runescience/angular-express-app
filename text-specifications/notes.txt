@@ -24,3 +24,48 @@ version nullable=True, supercedes nullable=True,
 author = nullable=False
 
 use these files, to copy the structure and content into updates for the option-lists files: @teams.components.html, has list and modal form, to aid user in showing rows, and adding updating new rows. @teams.components.ts, @teams.entity.ts, @teams.interface.ts, @teams.service.ts
+
+
+#================================
+Similar to teams component, I would like a new update for the question-type, that has CRUD capability for using sqlite, and typeorm. For listing, adding, updating deleting records for question-type
+
+in the team db, new table question_types, as follows
+class QuestionType(db.Model):
+    __tablename__ = 'question_types'
+
+    question_type_id = db.Column(db.String,
+                                 primary_key=True,
+                                 default=lambda: str(uuid.uuid4())[:8])
+    # Primary Key
+
+    type = db.Column(db.String, unique=True,
+                     nullable=False)  # Type of question
+    is_active = db.Column(db.Boolean, default=True)  # Active flag
+    has_regex = db.Column(db.Boolean, default=False)  # Regex support flag
+    regex_str = db.Column(db.String, nullable=True)  # Regex string
+
+    has_options = db.Column(db.Boolean, default=False)  # Options flag
+    options_str = db.Column(
+        db.String, nullable=True)  # Options string in CSV or JSON format
+
+    has_supplemental = db.Column(
+        db.Boolean, default=False)  # Supplemental information flag
+    supplemental_str = db.Column(
+        db.String, nullable=True)  # Supplemental information string
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime,
+                           default=datetime.utcnow,
+                           onupdate=datetime.utcnow)
+    author = db.Column(db.String, nullable=True)  # Author of the QuestionType
+
+    # Relationship with Question, enabling bi-directional access
+    questions = db.relationship('Question', backref='question_type', lazy=True)
+
+    def __repr__(self):
+        return f"<QuestionType {self.type}>"
+
+
+use these files, to copy the structure and content into updates for the question-type files: @teams.components.html, has list and modal form, to aid user in showing rows, and adding updating new rows. @teams.components.ts, @teams.entity.ts, @teams.interface.ts, @teams.service.ts
+
+the name of the db file for sqlite3 is teams.db
