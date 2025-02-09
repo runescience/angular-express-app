@@ -1,30 +1,16 @@
-
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+
+
 import { QuestionTypeService } from '../question-type/question-type.service';
 import { QuestionService } from './question.service';
 import { QuestionType } from '../question-type/question-type.interface'; // Import the interface
 import { Question } from './question.interface';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpErrorResponse } from '@angular/common/http';
-import { NgIf } from '@angular/common';
 
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class LogService {
-  constructor(private http: HttpClient) { }
-
-  log(message: string, data?: any) {
-    this.http.post('http://localhost:3000/api/log', {
-      message,
-      data,
-      timestamp: new Date()
-    }).subscribe();
-  }
-}
+import { forkJoin } from 'rxjs';
+import { QuestionWithType } from './question.types';
 
 @Component({
   standalone: false,
@@ -33,10 +19,10 @@ export class LogService {
   styleUrls: ['./question.component.css']
 })
 export class QuestionComponent implements OnInit {
-
+  questions: QuestionWithType[] = [];
+  questionTypes: QuestionType[] = [];
   questionForm: FormGroup;
-  questions: Question[] = [];
-  questionTypes: QuestionType[] = []; // Add this line
+
   isEditing = false;
   isModalOpen = false;
   currentQuestionId: string | null = null;
@@ -57,27 +43,39 @@ export class QuestionComponent implements OnInit {
     });
   }
   ngOnInit() {
-    this.loadQuestions();
-    this.loadQuestionTypes(); // Fetch question types here
+
+    this.loadQuestionsAndTypes();
+
   }
 
-  // Add this method
-  loadQuestions() {
+  loadQuestionsAndTypes() {
     this.loading = true;
     this.error = null;
-    this.questionService.getAllQuestions()
-      .subscribe({
-        next: (questions) => {
-          this.questions = questions;
-          this.loading = false;
-          console.log('Questions loaded successfully:', this.questions);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.handleError(error, 'load');
-        }
-      });
-  }
 
+    forkJoin({
+      questions: this.questionService.getAllQuestions(),
+      questionTypes: this.questionTypeService.getAllQuestionTypes()
+    }).subscribe({
+      next: ({ questions, questionTypes }) => {
+        this.questionTypes = questionTypes;
+        this.questions = questions.map(question => {
+          const questionType = questionTypes.find(
+            qt => qt.question_type_id === question.question_type_id
+          );
+          return {
+            ...question,
+            questionTypeName: questionType?.type || 'Unknown Type'
+          };
+        });
+        this.loading = false;
+        console.log('Questions and types loaded successfully:', this.questions);
+      },
+      error: (error) => {
+        this.handleError(error, 'load');
+        this.loading = false;
+      }
+    });
+  }
 
   loadQuestionTypes() {
     this.loading = true;
@@ -108,7 +106,7 @@ export class QuestionComponent implements OnInit {
         this.questionService.updateQuestion(this.currentQuestionId, this.questionForm.value)
           .subscribe({
             next: () => {
-              this.loadQuestions();
+              this.loadQuestionsAndTypes();
               this.resetForm();
               this.loading = false;
               this.closeModal();
@@ -121,7 +119,7 @@ export class QuestionComponent implements OnInit {
         this.questionService.createQuestion(this.questionForm.value)
           .subscribe({
             next: () => {
-              this.loadQuestions();
+              this.loadQuestionsAndTypes();
               this.resetForm();
               this.loading = false;
               this.closeModal();
@@ -135,9 +133,16 @@ export class QuestionComponent implements OnInit {
   }
 
   editQuestion(question: Question) {
+    console.log('Editing question:', question);
     this.isEditing = true;
     this.currentQuestionId = question.question_id;
-    this.questionForm.patchValue(question);
+    this.questionForm.patchValue({
+      question_text: question.question_text,
+      question_help: question.question_help,
+      question_type_id: question.question_type_id,
+      author: question.author,
+      is_active: question.is_active
+    });
     this.openModal();
   }
 
@@ -148,7 +153,7 @@ export class QuestionComponent implements OnInit {
       this.questionService.deleteQuestion(id)
         .subscribe({
           next: () => {
-            this.loadQuestions();
+            this.loadQuestionsAndTypes();
             this.loading = false;
           },
           error: (error: HttpErrorResponse) => {

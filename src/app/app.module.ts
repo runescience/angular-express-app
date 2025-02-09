@@ -28,12 +28,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
+    QuestionComponent,
     EschListComponent,
     SupportListComponent,
     DashboardComponent,
     TeamsComponent,
     QuestionTypeComponent,
-    QuestionComponent,
     WorkflowTemplateComponent,
     SelectWorkflowComponent,
     RolesComponent,

@@ -932,6 +932,63 @@ app.post("/api/questions", (req, res) => {
     );
 });
 
+
+// Update a question
+app.put('/api/questions/:id', (req, res) => {
+    const { question_text, question_help, question_type_id, author } = req.body;
+    const { id } = req.params;
+
+    console.log("Received data:", req.body);
+    console.log("Question ID:", id);
+    console.log("Question Text:", question_text);
+    console.log("Question Help:", question_help);
+    console.log("Question Type ID:", question_type_id);
+    console.log("Author:", author);
+
+
+    db.run(
+        `UPDATE questions
+         SET question_text = ?, question_help = ?, question_type_id = ?, author = ?, updated_at = CURRENT_TIMESTAMP
+         WHERE question_id = ?`,
+        [question_text, question_help, question_type_id, author, id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'Question not found' });
+                return;
+            }
+            res.status(200).json({ message: 'Question updated successfully' });
+        }
+    );
+});
+
+// Delete a question
+app.delete('/api/questions/:id', (req, res) => {
+    const { id } = req.params;
+
+    db.run(
+        'DELETE FROM questions WHERE question_id = ?',
+        [id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'Question not found' });
+                return;
+            }
+            res.status(200).json({ message: 'Question deleted successfully' });
+        }
+    );
+});
+
+
 app.put("/api/question-types/:id", (req, res) => {
     const { type, has_regex, regex_str, has_options, options_str, has_supplemental, supplemental_str, author, is_active } = req.body;
 
