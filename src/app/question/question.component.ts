@@ -1,10 +1,30 @@
 
 import { Component, OnInit } from '@angular/core';
+import { QuestionTypeService } from '../question-type/question-type.service';
 import { QuestionService } from './question.service';
+import { QuestionType } from '../question-type/question-type.interface'; // Import the interface
 import { Question } from './question.interface';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgIf } from '@angular/common';
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class LogService {
+  constructor(private http: HttpClient) { }
+
+  log(message: string, data?: any) {
+    this.http.post('http://localhost:3000/api/log', {
+      message,
+      data,
+      timestamp: new Date()
+    }).subscribe();
+  }
+}
 
 @Component({
   standalone: false,
@@ -13,16 +33,19 @@ import { NgIf } from '@angular/common';
   styleUrls: ['./question.component.css']
 })
 export class QuestionComponent implements OnInit {
+
   questionForm: FormGroup;
   questions: Question[] = [];
+  questionTypes: QuestionType[] = []; // Add this line
   isEditing = false;
   isModalOpen = false;
   currentQuestionId: string | null = null;
   loading = false;
   error: string | null = null;
-
   constructor(
+
     private questionService: QuestionService,
+    private questionTypeService: QuestionTypeService, // Add this line
     private fb: FormBuilder
   ) {
     this.questionForm = this.fb.group({
@@ -33,11 +56,12 @@ export class QuestionComponent implements OnInit {
       is_active: [true]
     });
   }
-
   ngOnInit() {
     this.loadQuestions();
+    this.loadQuestionTypes(); // Fetch question types here
   }
 
+  // Add this method
   loadQuestions() {
     this.loading = true;
     this.error = null;
@@ -46,12 +70,34 @@ export class QuestionComponent implements OnInit {
         next: (questions) => {
           this.questions = questions;
           this.loading = false;
+          console.log('Questions loaded successfully:', this.questions);
         },
         error: (error: HttpErrorResponse) => {
           this.handleError(error, 'load');
         }
       });
   }
+
+
+  loadQuestionTypes() {
+    this.loading = true;
+    this.error = null;
+    console.log('Loading question types...'); // Log start of loading
+    this.questionTypeService.getAllQuestionTypes()
+      .subscribe({
+        next: (questionTypes) => {
+          this.questionTypes = questionTypes;
+          this.loading = false;
+
+          console.log('Question types loaded successfully:', this.questionTypes); // Log success
+
+        },
+        error: (error: HttpErrorResponse) => {
+          this.handleError(error, 'load');
+        }
+      });
+  }
+
 
   onSubmit() {
     if (this.questionForm.valid) {

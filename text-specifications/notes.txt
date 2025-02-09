@@ -90,3 +90,46 @@ class QuestionType(db.Model):
 use these files, to copy the structure and content into updates for the question-type files: @teams.components.html, has list and modal form, to aid user in showing rows, and adding updating new rows. @teams.components.ts, @teams.entity.ts, @teams.interface.ts, @teams.service.ts
 
 the name of the db file for sqlite3 is teams.db
+
+//=======================================
+//=======================================
+
+Similar to teams component, I would like a new update for the question, that has CRUD capability for using sqlite, and typeorm. For listing, adding, updating deleting records for questions
+
+in the team db, new table questions, as follows
+class Question(db.Model):
+    __tablename__ = 'questions'
+
+    question_id = db.Column(
+        db.String, primary_key=True,
+        default=lambda: str(uuid.uuid4())[:8])  # Primary Key
+
+    question_text = db.Column(db.String, nullable=False)  # Question text
+    question_help = db.Column(db.String, nullable=True)  # Optional help text
+
+    # Foreign key to link to the QuestionType table
+    question_type_id = db.Column(
+        db.String,
+        db.ForeignKey('question_types.question_type_id'),
+        nullable=False)
+
+    created_at = db.Column(db.DateTime,
+                           default=datetime.utcnow)  # Creation timestamp
+    updated_at = db.Column(db.DateTime,
+                           default=datetime.utcnow,
+                           onupdate=datetime.utcnow)  # Update timestamp
+
+    author = db.Column(db.String, nullable=True)  # Optional author field
+
+    # Relationship with comments, establishing a one-to-many relationship
+    comments = db.relationship('Comment', backref='question', lazy=True)
+
+    def __repr__(self):
+        return f"<Question {self.question_text}>"
+
+
+
+
+use these files, to copy the structure and content into updates for the question files: @teams.components.html, has list and modal form, to aid user in showing rows, and adding updating new rows. @teams.components.ts, @teams.entity.ts, @teams.interface.ts, @teams.service.ts
+
+the name of the db file for sqlite3 is teams.db

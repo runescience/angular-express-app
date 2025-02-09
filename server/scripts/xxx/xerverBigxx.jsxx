@@ -10,15 +10,27 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Create SQLite database connection
-const db = new sqlite3.Database('users.db', (err) => {
+// Create SQLite database connections
+const teamsDb = new sqlite3.Database('teams.db', (err) => {
     if (err) {
-        console.error('Error connecting to database:', err);
+        console.error('Error connecting to teams database:', err);
     } else {
-        console.log('Connected to SQLite database');
-        
+        console.log('Connected to teams SQLite database');
+
+        // Create teams table
+        teamsDb.run(`
+            CREATE TABLE IF NOT EXISTS teams (
+                id TEXT PRIMARY KEY,
+                teamName TEXT NOT NULL,
+                author TEXT NOT NULL,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                is_active INTEGER DEFAULT 1
+            )
+        `);
+
         // Create roles table
-        db.run(`
+        teamsDb.run(`
             CREATE TABLE IF NOT EXISTS roles (
                 role_id TEXT PRIMARY KEY,
                 role_name TEXT NOT NULL,
@@ -29,8 +41,31 @@ const db = new sqlite3.Database('users.db', (err) => {
             )
         `);
 
+        // Create option lists table
+        teamsDb.run(`
+            CREATE TABLE IF NOT EXISTS list_options (
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                list_data TEXT NOT NULL,
+                version TEXT,
+                supercedes TEXT,
+                author TEXT NOT NULL,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                is_active INTEGER DEFAULT 1
+            )
+        `);
+    }
+});
+
+const usersDb = new sqlite3.Database('users.db', (err) => {
+    if (err) {
+        console.error('Error connecting to users database:', err);
+    } else {
+        console.log('Connected to users SQLite database');
+
         // Create users table
-        db.run(`
+        usersDb.run(`
             CREATE TABLE IF NOT EXISTS users (
                 user_id TEXT PRIMARY KEY,
                 username TEXT NOT NULL,
@@ -42,8 +77,8 @@ const db = new sqlite3.Database('users.db', (err) => {
             )
         `);
 
-        // Create user_roles junction table for many-to-many relationship
-        db.run(`
+        // Create user_roles junction table
+        usersDb.run(`
             CREATE TABLE IF NOT EXISTS user_roles (
                 user_id TEXT NOT NULL,
                 role_id TEXT NOT NULL,
@@ -54,7 +89,7 @@ const db = new sqlite3.Database('users.db', (err) => {
         `);
 
         // Create question_types table
-        db.run(`
+        usersDb.run(`
             CREATE TABLE IF NOT EXISTS question_types (
                 question_type_id TEXT PRIMARY KEY,
                 type TEXT NOT NULL UNIQUE,
@@ -72,7 +107,7 @@ const db = new sqlite3.Database('users.db', (err) => {
         `);
 
         // Create questions table
-        db.run(`
+        usersDb.run(`
             CREATE TABLE IF NOT EXISTS questions (
                 question_id TEXT PRIMARY KEY,
                 question_text TEXT NOT NULL,
@@ -86,7 +121,7 @@ const db = new sqlite3.Database('users.db', (err) => {
         `);
 
         // Create workflow_templates table
-        db.run(`
+        usersDb.run(`
             CREATE TABLE IF NOT EXISTS workflow_templates (
                 id TEXT PRIMARY KEY,
                 title TEXT NOT NULL,
@@ -99,7 +134,7 @@ const db = new sqlite3.Database('users.db', (err) => {
         `);
 
         // Create cases table
-        db.run(`
+        usersDb.run(`
             CREATE TABLE IF NOT EXISTS cases (
                 id TEXT PRIMARY KEY,
                 case_number TEXT UNIQUE NOT NULL,
@@ -117,8 +152,8 @@ const db = new sqlite3.Database('users.db', (err) => {
             )
         `);
 
-        // Create comments table with self-referential relationship
-        db.run(`
+        // Create comments table
+        usersDb.run(`
             CREATE TABLE IF NOT EXISTS comments (
                 comment_id TEXT PRIMARY KEY,
                 content TEXT NOT NULL,
@@ -134,7 +169,7 @@ const db = new sqlite3.Database('users.db', (err) => {
         `);
 
         // Create answers table
-        db.run(`
+        usersDb.run(`
             CREATE TABLE IF NOT EXISTS answers (
                 id TEXT PRIMARY KEY,
                 case_id TEXT,
@@ -150,17 +185,150 @@ const db = new sqlite3.Database('users.db', (err) => {
                 FOREIGN KEY (user_id) REFERENCES users (user_id)
             )
         `);
+
+        // Create approval_stages table
+        usersDb.run(`
+            CREATE TABLE IF NOT EXISTS approval_stages (
+                stage_id TEXT PRIMARY KEY,
+                stage_name TEXT NOT NULL,
+                next_stage_name TEXT,
+                last_stage_name TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                modified_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                author TEXT NOT NULL,
+                modified_by TEXT,
+                is_first INTEGER DEFAULT 0,
+                is_last INTEGER DEFAULT 0,
+                order_num INTEGER NOT NULL,
+                conditions TEXT,
+                workflow_template_id TEXT,
+                approve_role_id TEXT,
+                deny_role_id TEXT,
+                FOREIGN KEY (workflow_template_id) REFERENCES workflow_templates (id),
+                FOREIGN KEY (approve_role_id) REFERENCES roles (role_id),
+                FOREIGN KEY (deny_role_id) REFERENCES roles (role_id)
+            )
+        `);
+
+        // Create internal_messages table
+        usersDb.run(`
+            CREATE TABLE IF NOT EXISTS internal_messages (
+                id TEXT PRIMARY KEY,
+                to_user_id TEXT NOT NULL,
+                subject TEXT NOT NULL,
+                content TEXT NOT NULL,
+                is_read INTEGER DEFAULT 0,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (to_user_id) REFERENCES users (user_id)
+            )
+        `);
     }
 });
 
 // Basic route
 app.get('/api', (req, res) => {
-    res.json({ message: 'Welcome to the Users API' });
+    res.json({ message: 'Welcome to the API' });
+});
+
+// Teams endpoints
+app.get('/api/teams', (req, res) => {
+    teamsDb.all('SELECT * FROM teams', [], (err, rows) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        res.json(rows);
+    });
+});
+
+app.get('/api/teams/:id', (req, res) => {
+    teamsDb.get('SELECT * FROM teams WHERE id = ?', [req.params.id], (err, row) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        if (!row) {
+            res.status(404).json({ error: 'Team not found' });
+            return;
+        }
+        res.json(row);
+    });
+});
+
+app.post('/api/teams', (req, res) => {
+    const { teamName, author, is_active } = req.body;
+    const id = uuidv4().substring(0, 8);
+
+    teamsDb.run(
+        'INSERT INTO teams (id, teamName, author, is_active) VALUES (?, ?, ?, ?)',
+        [id, teamName, author, is_active ? 1 : 0],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            res.status(201).json({
+                id,
+                teamName,
+                author,
+                is_active,
+                created_on: new Date(),
+                updated_on: new Date()
+            });
+        }
+    );
+});
+
+app.put('/api/teams/:id', (req, res) => {
+    const { teamName, author, is_active } = req.body;
+
+    teamsDb.run(
+        `UPDATE teams 
+         SET teamName = ?, author = ?, is_active = ?, updated_on = CURRENT_TIMESTAMP 
+         WHERE id = ?`,
+        [teamName, author, is_active ? 1 : 0, req.params.id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'Team not found' });
+                return;
+            }
+            res.json({
+                id: req.params.id,
+                teamName,
+                author,
+                is_active,
+                updated_on: new Date()
+            });
+        }
+    );
+});
+
+app.delete('/api/teams/:id', (req, res) => {
+    teamsDb.run('DELETE FROM teams WHERE id = ?', [req.params.id], function (err) {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        if (this.changes === 0) {
+            res.status(404).json({ error: 'Team not found' });
+            return;
+        }
+        res.status(204).send();
+    });
 });
 
 // Question Types endpoints
 app.get('/api/question-types', (req, res) => {
-    db.all('SELECT * FROM question_types', [], (err, rows) => {
+    usersDb.all('SELECT * FROM question_types', [], (err, rows) => {
         if (err) {
             console.error(err);
             res.status(500).json({ error: 'Internal server error' });
@@ -171,7 +339,7 @@ app.get('/api/question-types', (req, res) => {
 });
 
 app.get('/api/question-types/:id', (req, res) => {
-    db.get('SELECT * FROM question_types WHERE question_type_id = ?', [req.params.id], (err, row) => {
+    usersDb.get('SELECT * FROM question_types WHERE question_type_id = ?', [req.params.id], (err, row) => {
         if (err) {
             console.error(err);
             res.status(500).json({ error: 'Internal server error' });
@@ -189,7 +357,7 @@ app.post('/api/question-types', (req, res) => {
     const { type, has_regex, regex_str, has_options, options_str, has_supplemental, supplemental_str, author } = req.body;
     const question_type_id = uuidv4().substring(0, 8);
 
-    db.run(
+    usersDb.run(
         `INSERT INTO question_types (
             question_type_id, type, has_regex, regex_str, has_options, 
             options_str, has_supplemental, supplemental_str, author
@@ -218,7 +386,7 @@ app.post('/api/question-types', (req, res) => {
 
 // Questions endpoints
 app.get('/api/questions', (req, res) => {
-    db.all('SELECT * FROM questions', [], (err, rows) => {
+    usersDb.all('SELECT * FROM questions', [], (err, rows) => {
         if (err) {
             console.error(err);
             res.status(500).json({ error: 'Internal server error' });
@@ -229,7 +397,7 @@ app.get('/api/questions', (req, res) => {
 });
 
 app.get('/api/questions/:id', (req, res) => {
-    db.get('SELECT * FROM questions WHERE question_id = ?', [req.params.id], (err, row) => {
+    usersDb.get('SELECT * FROM questions WHERE question_id = ?', [req.params.id], (err, row) => {
         if (err) {
             console.error(err);
             res.status(500).json({ error: 'Internal server error' });
@@ -247,7 +415,7 @@ app.post('/api/questions', (req, res) => {
     const { question_text, question_help, question_type_id, author } = req.body;
     const question_id = uuidv4().substring(0, 8);
 
-    db.run(
+    usersDb.run(
         'INSERT INTO questions (question_id, question_text, question_help, question_type_id, author) VALUES (?, ?, ?, ?, ?)',
         [question_id, question_text, question_help, question_type_id, author],
         function (err) {
@@ -269,59 +437,9 @@ app.post('/api/questions', (req, res) => {
     );
 });
 
-
-// Update a question
-app.put('/api/questions/:id', (req, res) => {
-    const { question_text, question_help, question_type_id, author } = req.body;
-    const { id } = req.params;
-
-    db.run(
-        `UPDATE questions
-         SET question_text = ?, question_help = ?, question_type_id = ?, author = ?, updated_at = CURRENT_TIMESTAMP
-         WHERE question_id = ?`,
-        [question_text, question_help, question_type_id, author, id],
-        function (err) {
-            if (err) {
-                console.error(err);
-                res.status(500).json({ error: 'Internal server error' });
-                return;
-            }
-            if (this.changes === 0) {
-                res.status(404).json({ error: 'Question not found' });
-                return;
-            }
-            res.status(200).json({ message: 'Question updated successfully' });
-        }
-    );
-});
-
-// Delete a question
-app.delete('/api/questions/:id', (req, res) => {
-    const { id } = req.params;
-
-    db.run(
-        'DELETE FROM questions WHERE question_id = ?',
-        [id],
-        function (err) {
-            if (err) {
-                console.error(err);
-                res.status(500).json({ error: 'Internal server error' });
-                return;
-            }
-            if (this.changes === 0) {
-                res.status(404).json({ error: 'Question not found' });
-                return;
-            }
-            res.status(200).json({ message: 'Question deleted successfully' });
-        }
-    );
-});
-
-
-
 // Workflow Templates endpoints
 app.get('/api/workflow-templates', (req, res) => {
-    db.all('SELECT * FROM workflow_templates', [], (err, rows) => {
+    usersDb.all('SELECT * FROM workflow_templates', [], (err, rows) => {
         if (err) {
             console.error(err);
             res.status(500).json({ error: 'Internal server error' });
@@ -332,7 +450,7 @@ app.get('/api/workflow-templates', (req, res) => {
 });
 
 app.get('/api/workflow-templates/:id', (req, res) => {
-    db.get('SELECT * FROM workflow_templates WHERE id = ?', [req.params.id], (err, row) => {
+    usersDb.get('SELECT * FROM workflow_templates WHERE id = ?', [req.params.id], (err, row) => {
         if (err) {
             console.error(err);
             res.status(500).json({ error: 'Internal server error' });
@@ -350,7 +468,7 @@ app.post('/api/workflow-templates', (req, res) => {
     const { title, role_ids, question_ids, author } = req.body;
     const id = uuidv4().substring(0, 8);
 
-    db.run(
+    usersDb.run(
         'INSERT INTO workflow_templates (id, title, role_ids, question_ids, author) VALUES (?, ?, ?, ?, ?)',
         [id, title, role_ids, question_ids, author],
         function (err) {
@@ -372,59 +490,9 @@ app.post('/api/workflow-templates', (req, res) => {
     );
 });
 
-// Update a workflow template
-app.put('/api/workflow-templates/:id', (req, res) => {
-    const { title, role_ids, question_ids, author } = req.body;
-    const { id } = req.params;
-
-    db.run(
-        `UPDATE workflow_templates
-         SET title = ?, role_ids = ?, question_ids = ?, author = ?, updated_at = CURRENT_TIMESTAMP
-         WHERE id = ?`,
-        [title, role_ids, question_ids, author, id],
-        function (err) {
-            if (err) {
-                console.error(err);
-                res.status(500).json({ error: 'Internal server error' });
-                return;
-            }
-            if (this.changes === 0) {
-                res.status(404).json({ error: 'Workflow template not found' });
-                return;
-            }
-            res.status(200).json({ message: 'Workflow template updated successfully' });
-        }
-    );
-});
-
-// Delete a workflow template
-app.delete('/api/workflow-templates/:id', (req, res) => {
-    const { id } = req.params;
-
-    db.run(
-        'DELETE FROM workflow_templates WHERE id = ?',
-        [id],
-        function (err) {
-            if (err) {
-                console.error(err);
-                res.status(500).json({ error: 'Internal server error' });
-                return;
-            }
-            if (this.changes === 0) {
-                res.status(404).json({ error: 'Workflow template not found' });
-                return;
-            }
-            res.status(200).json({ message: 'Workflow template deleted successfully' });
-        }
-    );
-});
-
-
-// Users endpoints
-
-// Get all users
-app.get('/api/users', (req, res) => {
-    db.all('SELECT * FROM users', [], (err, rows) => {
+// Approval Stages endpoints
+app.get('/api/approval-stages', (req, res) => {
+    usersDb.all('SELECT * FROM approval_stages', [], (err, rows) => {
         if (err) {
             console.error(err);
             res.status(500).json({ error: 'Internal server error' });
@@ -434,30 +502,34 @@ app.get('/api/users', (req, res) => {
     });
 });
 
-// Get user by ID
-app.get('/api/users/:id', (req, res) => {
-    db.get('SELECT * FROM users WHERE user_id = ?', [req.params.id], (err, row) => {
+app.get('/api/approval-stages/:id', (req, res) => {
+    usersDb.get('SELECT * FROM approval_stages WHERE stage_id = ?', [req.params.id], (err, row) => {
         if (err) {
             console.error(err);
             res.status(500).json({ error: 'Internal server error' });
             return;
         }
         if (!row) {
-            res.status(404).json({ error: 'User not found' });
+            res.status(404).json({ error: 'Approval stage not found' });
             return;
         }
         res.json(row);
     });
 });
 
-// Create a new user
-app.post('/api/users', (req, res) => {
-    const { username, email, password_hash, is_active } = req.body;
-    const user_id = uuidv4().substring(0, 8);
+app.post('/api/approval-stages', (req, res) => {
+    const { stage_name, next_stage_name, last_stage_name, author, modified_by, is_first, is_last,
+        order_num, conditions, workflow_template_id, approve_role_id, deny_role_id } = req.body;
+    const stage_id = uuidv4().substring(0, 8);
 
-    db.run(
-        'INSERT INTO users (user_id, username, email, password_hash, is_active) VALUES (?, ?, ?, ?, ?)',
-        [user_id, username, email, password_hash, is_active],
+    usersDb.run(
+        `INSERT INTO approval_stages (
+            stage_id, stage_name, next_stage_name, last_stage_name, author, modified_by,
+            is_first, is_last, order_num, conditions, workflow_template_id, approve_role_id, deny_role_id
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [stage_id, stage_name, next_stage_name, last_stage_name, author, modified_by,
+            is_first ? 1 : 0, is_last ? 1 : 0, order_num, conditions, workflow_template_id,
+            approve_role_id, deny_role_id],
         function (err) {
             if (err) {
                 console.error(err);
@@ -465,27 +537,38 @@ app.post('/api/users', (req, res) => {
                 return;
             }
             res.status(201).json({
-                user_id,
-                username,
-                email,
-                is_active,
+                stage_id,
+                stage_name,
+                next_stage_name,
+                last_stage_name,
+                author,
+                modified_by,
+                is_first,
+                is_last,
+                order_num,
+                conditions,
+                workflow_template_id,
+                approve_role_id,
+                deny_role_id,
                 created_at: new Date(),
-                updated_at: new Date()
+                modified_at: new Date()
             });
         }
     );
 });
 
-// Update a user
-app.put('/api/users/:id', (req, res) => {
-    const { username, email, password_hash, is_active } = req.body;
-    const { id } = req.params;
+app.put('/api/approval-stages/:id', (req, res) => {
+    const { stage_name, next_stage_name, last_stage_name, modified_by, is_first, is_last,
+        order_num, conditions, workflow_template_id, approve_role_id, deny_role_id } = req.body;
 
-    db.run(
-        `UPDATE users
-         SET username = ?, email = ?, password_hash = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP
-         WHERE user_id = ?`,
-        [username, email, password_hash, is_active, id],
+    usersDb.run(
+        `UPDATE approval_stages 
+         SET stage_name = ?, next_stage_name = ?, last_stage_name = ?, modified_by = ?,
+             is_first = ?, is_last = ?, order_num = ?, conditions = ?, workflow_template_id = ?,
+             approve_role_id = ?, deny_role_id = ?, modified_at = CURRENT_TIMESTAMP
+         WHERE stage_id = ?`,
+        [stage_name, next_stage_name, last_stage_name, modified_by, is_first ? 1 : 0, is_last ? 1 : 0,
+            order_num, conditions, workflow_template_id, approve_role_id, deny_role_id, req.params.id],
         function (err) {
             if (err) {
                 console.error(err);
@@ -493,40 +576,45 @@ app.put('/api/users/:id', (req, res) => {
                 return;
             }
             if (this.changes === 0) {
-                res.status(404).json({ error: 'User not found' });
+                res.status(404).json({ error: 'Approval stage not found' });
                 return;
             }
-            res.status(200).json({ message: 'User updated successfully' });
+            res.json({
+                stage_id: req.params.id,
+                stage_name,
+                next_stage_name,
+                last_stage_name,
+                modified_by,
+                is_first,
+                is_last,
+                order_num,
+                conditions,
+                workflow_template_id,
+                approve_role_id,
+                deny_role_id,
+                modified_at: new Date()
+            });
         }
     );
 });
 
-// Delete a user
-app.delete('/api/users/:id', (req, res) => {
-    const { id } = req.params;
-
-    db.run(
-        'DELETE FROM users WHERE user_id = ?',
-        [id],
-        function (err) {
-            if (err) {
-                console.error(err);
-                res.status(500).json({ error: 'Internal server error' });
-                return;
-            }
-            if (this.changes === 0) {
-                res.status(404).json({ error: 'User not found' });
-                return;
-            }
-            res.status(200).json({ message: 'User deleted successfully' });
+app.delete('/api/approval-stages/:id', (req, res) => {
+    usersDb.run('DELETE FROM approval_stages WHERE stage_id = ?', [req.params.id], function (err) {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
         }
-    );
+        if (this.changes === 0) {
+            res.status(404).json({ error: 'Approval stage not found' });
+            return;
+        }
+        res.status(204).send();
+    });
 });
-
-
 
 // Set port and start server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is running on http://0.0.0.0:${PORT}`);
+app.listen(PORT, 'localhost', () => {
+    console.log(`Server is running on port ${PORT}`);
 });

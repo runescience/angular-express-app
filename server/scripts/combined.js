@@ -469,8 +469,8 @@ app.get('/api/approval-stages/:id', (req, res) => {
 });
 
 app.post('/api/approval-stages', (req, res) => {
-    const { stage_name, next_stage_name, last_stage_name, author, modified_by, is_first, is_last, 
-            order_num, conditions, workflow_template_id, approve_role_id, deny_role_id } = req.body;
+    const { stage_name, next_stage_name, last_stage_name, author, modified_by, is_first, is_last,
+        order_num, conditions, workflow_template_id, approve_role_id, deny_role_id } = req.body;
     const stage_id = uuidv4().substring(0, 8);
 
     db.run(
@@ -478,9 +478,9 @@ app.post('/api/approval-stages', (req, res) => {
             stage_id, stage_name, next_stage_name, last_stage_name, author, modified_by,
             is_first, is_last, order_num, conditions, workflow_template_id, approve_role_id, deny_role_id
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [stage_id, stage_name, next_stage_name, last_stage_name, author, modified_by, 
-         is_first ? 1 : 0, is_last ? 1 : 0, order_num, conditions, workflow_template_id, 
-         approve_role_id, deny_role_id],
+        [stage_id, stage_name, next_stage_name, last_stage_name, author, modified_by,
+            is_first ? 1 : 0, is_last ? 1 : 0, order_num, conditions, workflow_template_id,
+            approve_role_id, deny_role_id],
         function (err) {
             if (err) {
                 console.error(err);
@@ -510,7 +510,7 @@ app.post('/api/approval-stages', (req, res) => {
 
 app.put('/api/approval-stages/:id', (req, res) => {
     const { stage_name, next_stage_name, last_stage_name, modified_by, is_first, is_last,
-            order_num, conditions, workflow_template_id, approve_role_id, deny_role_id } = req.body;
+        order_num, conditions, workflow_template_id, approve_role_id, deny_role_id } = req.body;
 
     db.run(
         `UPDATE approval_stages 
@@ -519,7 +519,7 @@ app.put('/api/approval-stages/:id', (req, res) => {
              approve_role_id = ?, deny_role_id = ?, modified_at = CURRENT_TIMESTAMP
          WHERE stage_id = ?`,
         [stage_name, next_stage_name, last_stage_name, modified_by, is_first ? 1 : 0, is_last ? 1 : 0,
-         order_num, conditions, workflow_template_id, approve_role_id, deny_role_id, req.params.id],
+            order_num, conditions, workflow_template_id, approve_role_id, deny_role_id, req.params.id],
         function (err) {
             if (err) {
                 console.error(err);
@@ -566,6 +566,6 @@ app.delete('/api/approval-stages/:id', (req, res) => {
 
 // Set port and start server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, 'localhost', () => {
     console.log(`Server is running on port ${PORT}`);
 });

@@ -10,10 +10,23 @@ import { Question } from './question.interface';
 export class QuestionService {
   private apiUrl = 'http://localhost:3000/api/questions';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllQuestions(): Observable<Question[]> {
-    return this.http.get<Question[]>(this.apiUrl);
+    console.log('Fetching getAllQuestions from:', this.apiUrl);
+    const result = this.http.get<Question[]>(this.apiUrl);
+
+    result.subscribe({
+      next: (data: Question[]) => {
+        console.log('%c Question Data:', 'background: #222; color: #bada55', data);
+        console.table(data); // This will show the data in a table format
+      },
+      error: (error: any) => {
+        console.error('Error retrieving questions:', error);
+      }
+    });
+
+    return result;
   }
 
   getQuestion(id: string): Observable<Question> {

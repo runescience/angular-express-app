@@ -23,6 +23,13 @@ app.use(express.json()); // Parse JSON bodies - only need this once
 // Import cases module
 const casesModule = require("./cases");
 
+
+app.post('/api/log', (req, res) => {
+    console.log(`[${new Date().toISOString()}]`, req.body.message, req.body.data || '');
+    res.sendStatus(200);
+});
+
+
 // Basic route
 app.get("/api", (req, res) => {
     res.json({ message: "Welcome to the Teams API" });

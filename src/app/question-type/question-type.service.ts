@@ -13,7 +13,23 @@ export class QuestionTypeService {
   constructor(private http: HttpClient) { }
 
   getAllQuestionTypes(): Observable<QuestionType[]> {
-    return this.http.get<QuestionType[]>(this.apiUrl);
+
+    const result = this.http.get<QuestionType[]>(this.apiUrl);
+
+    result.subscribe({
+      next: (data: QuestionType[]) => {
+        console.log('%c Question Types Data:', 'background: #222; color: #bada55', data);
+        console.table(data); // This will show the data in a table format
+      },
+      error: (error: any) => {
+        console.error('Error retrieving question types:', error);
+      }
+    });
+
+    console.log('Question types retrieved:', result);
+
+    return result;
+
   }
 
   getQuestionType(id: string): Observable<QuestionType> {
