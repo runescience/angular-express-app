@@ -22,6 +22,10 @@ export class UserComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
   ) {
+    this.initForm();
+  }
+
+  private initForm(): void {
     this.userForm = this.fb.group({
       username: [
         '',
@@ -54,59 +58,103 @@ export class UserComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.userService.getUsers().subscribe(
-      (users) => {
+    this.userService.getUsers().subscribe({
+      next: (users) => {
         this.users = users;
-        console.log('All Users:', users);
       },
-      (error) => console.error('Error loading users:', error),
-    );
+      error: (error) => {
+        this.errorMessage = 'Failed to load users';
+        console.error('Error loading users:', error);
+      },
+    });
   }
 
   loadRoles(): void {
-    this.userService.getAllRoles().subscribe(
-      (roles) => (this.roles = roles),
-      (error) => console.error('Error loading roles:', error),
-    );
+    this.userService.getAllRoles().subscribe({
+      next: (roles) => {
+        this.roles = roles;
+      },
+      error: (error) => {
+        console.error('Error loading roles:', error);
+      },
+    });
   }
 
   openModal(user?: User): void {
     this.errorMessage = '';
     this.isModalOpen = true;
     this.isEditing = !!user;
-    this.currentUserId = user ? user.user_id : null;
+    this.currentUserId = user?.user_id || null;
 
     if (user) {
+      // Edit mode
+      const roleIds = user.roles?.map((role) => role.role_id) || [];
       this.userForm.patchValue({
         username: user.username,
         email: user.email,
         is_active: user.is_active,
-        roles: user.roles ? user.roles.map((role) => role.role_id) : [],
+        roles: roleIds,
       });
+      // Remove password requirement in edit mode
       this.userForm.get('password')?.clearValidators();
+      this.userForm.get('password')?.updateValueAndValidity();
     } else {
-      this.userForm.reset({ is_active: true, roles: [] });
+      // Create mode
+      this.initForm(); // Reset to fresh form with all validators
     }
-    this.userForm.updateValueAndValidity();
+  }
+
+  closeModal(): void {
+    this.isModalOpen = false;
+    this.errorMessage = '';
+    this.userForm.reset({ is_active: true, roles: [] });
   }
 
   onSubmit(): void {
-    if (this.userForm.invalid) return;
+    if (this.userForm.invalid) {
+      return;
+    }
 
-    const userData = { ...this.userForm.value, user_id: this.currentUserId };
-    const request$ = this.isEditing
+    const userData = {
+      ...this.userForm.value,
+      roles: this.userForm.value.roles || [],
+    };
+
+    const operation = this.isEditing
       ? this.userService.updateUser(this.currentUserId!, userData)
       : this.userService.createUser(userData);
 
-    request$.subscribe(
-      () => {
+    operation.subscribe({
+      next: () => {
         this.loadUsers();
-        this.isModalOpen = false;
+        this.closeModal();
       },
-      (error) => (this.errorMessage = 'Error saving user: ' + error),
-    );
+      error: (error) => {
+        if (error.error?.includes('UNIQUE constraint')) {
+          this.errorMessage = 'Email address is already in use';
+        } else {
+          this.errorMessage = 'Failed to save user';
+        }
+        console.error('Error saving user:', error);
+      },
+    });
   }
 
+  deleteUser(userId: string): void {
+    if (confirm('Are you sure you want to delete this user?')) {
+      this.userService.deleteUser(userId).subscribe({
+        next: () => {
+          this.loadUsers();
+        },
+        error: (error) => {
+          this.errorMessage = 'Failed to delete user';
+          console.error('Error deleting user:', error);
+        },
+      });
+    }
+  }
+
+  // Helper methods for form validation
   isFieldInvalid(fieldName: string): boolean {
     const field = this.userForm.get(fieldName);
     return field ? field.invalid && (field.dirty || field.touched) : false;
@@ -115,15 +163,12 @@ export class UserComponent implements OnInit {
   getErrorMessage(fieldName: string): string {
     const control = this.userForm.get(fieldName);
     if (control?.errors) {
-      if (control.errors['required'])
-        return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
-      if (control.errors['email']) return 'Please enter a valid email address';
-      if (control.errors['minlength'])
-        return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} must be at least ${control.errors['minlength'].requiredLength} characters`;
-      if (control.errors['maxlength'])
-        return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} cannot exceed ${control.errors['maxlength'].requiredLength} characters`;
+      if (control.errors['required']) return `${fieldName} is required`;
+      if (control.errors['email']) return 'Invalid email format';
+      if (control.errors['minlength']) return `${fieldName} is too short`;
+      if (control.errors['maxlength']) return `${fieldName} is too long`;
       if (control.errors['pattern'])
-        return 'Password must contain at least one letter and one number';
+        return 'Password must contain letters and numbers';
     }
     return '';
   }
