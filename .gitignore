@@ -6,6 +6,10 @@
 /out-tsc
 /bazel-out
 
+teams.db
+package-lock.json
+package.json
+
 # Node
 node_modules
 server/node_modules
