@@ -118,11 +118,11 @@ export class UserComponent implements OnInit {
       next: (users) => {
         this.users = users;
         console.log('\n====> All Users:', users);
+        
         users.forEach(user => {
-          console.log('rUser ID:', user.user_id);
-          console.log('rUsername:', user.username);
-          console.log('rRoles:', user.roles);
-          console.log('------------------------');
+          
+          console.log('rUser ID:', user.user_id, '  rUsername:', user.username,'  rRoles:', user.roles, '\n------------');
+          
         });
       },
       error: (err) => {
