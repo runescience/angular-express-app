@@ -35,6 +35,7 @@ export class RolesComponent implements OnInit {
   }
 
   loadRoles() {
+    console.log("role.components.ts: loadRoles()")
     this.loading = true;
     this.error = null;
 

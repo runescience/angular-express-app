@@ -14,12 +14,12 @@ export class UserService {
     constructor(private http: HttpClient) { }
 
     getUsersWorking(): Observable<User[]> {
-        return this.http.get<User[]>(`${this.apiUrl}?include=roles`);
+        return this.http.get<User[]>(`${this.apiUrl}`);
     }
 
     getUsers(): Observable<User[]> {
-        console.log('UserService: Requesting users with URL:', `${this.apiUrl}?include=roles`);
-        return this.http.get<User[]>(`${this.apiUrl}?include=roles`).pipe(
+        console.log('UserService: Requesting users with URL:', `${this.apiUrl}`);
+        return this.http.get<User[]>(`${this.apiUrl}`).pipe(
             tap(users => {
                 console.log('UserService: Response received:', users);
             }),
@@ -32,7 +32,7 @@ export class UserService {
 
 
     getUserById(id: string): Observable<User> {
-        return this.http.get<User>(`${this.apiUrl}/${id}?include=roles`);
+        return this.http.get<User>(`${this.apiUrl}/${id}`);
     }
 
     createUser(userData: any): Observable<User> {
@@ -60,6 +60,8 @@ export class UserService {
 
     // Role-related methods
     getAllRoles(): Observable<Role[]> {
+        console.log('UserService: Requesting roles with URL:', this.roleUrl)
+
         return this.http.get<Role[]>(this.roleUrl);
     }
 

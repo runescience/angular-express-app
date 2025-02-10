@@ -4,6 +4,11 @@ const express = require("express");
 const cors = require("cors");
 const sqlite3 = require("sqlite3").verbose();
 const typeorm = require("typeorm");
+const User = require("./entities/User");
+const Role = require("./entities/Role");
+
+const { Not } = typeorm; // Add this line to get the Not operator
+
 const bcrypt = require('bcrypt')
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
@@ -14,16 +19,11 @@ const casesModule = require("./cases");
 // Replace generateId() with this function
 const generateId = () => uuidv4().substring(0, 8);
 
-
-
-
 // Middleware
 app.use(cors());
 app.use(express.json());
 
 // Import entity schemas
-const User = require("./entities/User");
-const Role = require("./entities/Role");
 
 // TypeORM Connection
 const dataSource = new typeorm.DataSource({
@@ -318,16 +318,40 @@ const db = new sqlite3.Database("teams.db", (err) => {
 // Users endpoints
 
 // Get all users
-app.get('/api/users', (req, res) => {
-    db.all('SELECT * FROM users', [], (err, rows) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: 'Internal server error' });
-            return;
-        }
-        res.json(rows);
-    });
+
+
+// Get all users
+// Get all users
+app.get('/api/users', async (req, res) => {
+    try {
+        const userRepository = dataSource.getRepository(users);
+        console.log('Fetching users with roles...');
+
+        const users = await userRepository.find({
+            relations: ["roles"],  // This includes the roles relationship
+            select: {  // Specify which fields to return
+                user_id: true,
+                username: true,
+                email: true,
+                is_active: true,
+                created_on: true,
+                updated_on: true,
+                roles: {
+                    role_id: true,
+                    role_name: true
+                }
+            }
+        });
+        console.log('Found users:', users.length);
+        console.log('Sample user with roles:', JSON.stringify(users[0], null, 2));
+
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: error.message });
+    }
 });
+
 
 // Get user by ID
 app.get('/api/users/:id', (req, res) => {
@@ -414,19 +438,15 @@ app.post('/api/users', async (req, res) => {
     }
 });
 
-// Update a user
-// app.put('/api/users/:id', (req, res) => {
-
 app.put('/api/users/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
         const { username, email, roles, is_active } = req.body;
 
         // Get repositories
-        const userRepository = dataSource.getRepository("User");
-        const roleRepository = dataSource.getRepository("Role");
+        const userRepository = dataSource.getRepository(User);
 
-        // Find existing user
+        // Find existing user with relations
         const existingUser = await userRepository.findOne({
             where: { user_id: userId },
             relations: ["roles"]
@@ -436,9 +456,26 @@ app.put('/api/users/:userId', async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
+        // If email is being changed, check for duplicates
+        if (email && email !== existingUser.email) {
+            const duplicateEmail = await userRepository.findOne({
+                where: {
+                    email: email,
+                    user_id: Not(userId) // Exclude current user from check
+                }
+            });
+
+            if (duplicateEmail) {
+                return res.status(400).json({
+                    error: 'This email address is already being used by another user'
+                });
+            }
+        }
+
         // Find roles if provided
         let roleEntities = [];
         if (roles && roles.length > 0) {
+            const roleRepository = dataSource.getRepository("Role");
             roleEntities = await roleRepository
                 .createQueryBuilder("role")
                 .where("role.role_id IN (:...roles)", { roles })
@@ -485,7 +522,6 @@ app.put('/api/users/:userId', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-
 
 
 
@@ -938,6 +974,10 @@ app.put("/api/roles/:id", (req, res) => {
     );
 });
 
+
+
+
+
 // Question Types endpoints
 app.get("/api/question-types", (req, res) => {
     db.all("SELECT * FROM question_types", [], (err, rows) => {
@@ -1081,6 +1121,44 @@ app.put("/api/question-types/:id", (req, res) => {
     );
 });
 
+
+app.put("/api/question-types/:id", (req, res) => {
+    const { type, has_regex, regex_str, has_options, options_str, has_supplemental, supplemental_str, author, is_active } = req.body;
+
+    db.run(
+        `UPDATE question_types 
+         SET type = ?, has_regex = ?, regex_str = ?, has_options = ?, options_str = ?,
+         has_supplemental = ?, supplemental_str = ?, author = ?, is_active = ?,
+         updated_on = CURRENT_TIMESTAMP
+         WHERE question_type_id = ?`,
+        [type, has_regex, regex_str, has_options, options_str, has_supplemental, supplemental_str, author, is_active, req.params.id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: "Internal server error" });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: "Question type not found" });
+                return;
+            }
+            res.json({
+                question_type_id: req.params.id,
+                type,
+                has_regex,
+                regex_str,
+                has_options,
+                options_str,
+                has_supplemental,
+                supplemental_str,
+                author,
+                is_active,
+                updated_on: new Date()
+            });
+        }
+    );
+});
+
 app.delete("/api/question-types/:id", (req, res) => {
     db.run(
         "DELETE FROM question_types WHERE question_type_id = ?",
@@ -1099,6 +1177,29 @@ app.delete("/api/question-types/:id", (req, res) => {
         },
     );
 });
+
+
+
+// app.delete("/api/question-types/:id", (req, res) => {
+//     db.run(
+//         "DELETE FROM question_types WHERE question_type_id = ?",
+//         [req.params.id],
+//         function (err) {
+//             if (err) {
+//                 console.error(err);
+//                 res.status(500).json({ error: "Internal server error" });
+//                 return;
+//             }
+//             if (this.changes === 0) {
+//                 res.status(404).json({ error: "Question type not found" });
+//                 return;
+//             }
+//             res.status(204).send();
+//         }
+//     );
+// });
+
+
 
 // Questions endpoints
 app.get("/api/questions", (req, res) => {
@@ -1209,63 +1310,6 @@ app.delete('/api/questions/:id', (req, res) => {
                 return;
             }
             res.status(200).json({ message: 'Question deleted successfully' });
-        }
-    );
-});
-
-
-app.put("/api/question-types/:id", (req, res) => {
-    const { type, has_regex, regex_str, has_options, options_str, has_supplemental, supplemental_str, author, is_active } = req.body;
-
-    db.run(
-        `UPDATE question_types 
-         SET type = ?, has_regex = ?, regex_str = ?, has_options = ?, options_str = ?,
-         has_supplemental = ?, supplemental_str = ?, author = ?, is_active = ?,
-         updated_on = CURRENT_TIMESTAMP
-         WHERE question_type_id = ?`,
-        [type, has_regex, regex_str, has_options, options_str, has_supplemental, supplemental_str, author, is_active, req.params.id],
-        function (err) {
-            if (err) {
-                console.error(err);
-                res.status(500).json({ error: "Internal server error" });
-                return;
-            }
-            if (this.changes === 0) {
-                res.status(404).json({ error: "Question type not found" });
-                return;
-            }
-            res.json({
-                question_type_id: req.params.id,
-                type,
-                has_regex,
-                regex_str,
-                has_options,
-                options_str,
-                has_supplemental,
-                supplemental_str,
-                author,
-                is_active,
-                updated_on: new Date()
-            });
-        }
-    );
-});
-
-app.delete("/api/question-types/:id", (req, res) => {
-    db.run(
-        "DELETE FROM question_types WHERE question_type_id = ?",
-        [req.params.id],
-        function (err) {
-            if (err) {
-                console.error(err);
-                res.status(500).json({ error: "Internal server error" });
-                return;
-            }
-            if (this.changes === 0) {
-                res.status(404).json({ error: "Question type not found" });
-                return;
-            }
-            res.status(204).send();
         }
     );
 });

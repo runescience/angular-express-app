@@ -13,7 +13,10 @@ export class RolesService {
   constructor(private http: HttpClient) { }
 
   getAllRoles(): Observable<Role[]> {
+    console.log('RolesService: Requesting roles with URL:', `${this.apiUrl}`);
+
     return this.http.get<Role[]>(this.apiUrl);
+
   }
 
   getRole(id: string): Observable<Role> {

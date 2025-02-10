@@ -60,11 +60,13 @@ export class UserComponent implements OnInit {
 
   // Getter for easy access to form fields in the template
   get f() {
+    console.log("resetForm()")
     return this.userForm.controls;
   }
 
   // Reset form and validation states
   resetForm() {
+    console.log("resetForm()")
     this.submitted = false;
     this.userForm.reset({
       is_active: true,
@@ -74,12 +76,14 @@ export class UserComponent implements OnInit {
 
   // Helper methods to check validation states
   isFieldInvalid(fieldName: string): boolean {
+    console.log("resetForm()")
     const field = this.userForm.get(fieldName);
     return field ? (field.invalid && (field.dirty || field.touched || this.submitted)) : false;
   }
 
   getErrorMessage(fieldName: string): string {
     const control = this.userForm.get(fieldName);
+    console.log("getErrorMessage(" + fieldName)
     if (control && control.errors) {
       if (control.errors['required']) {
         return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
@@ -98,23 +102,26 @@ export class UserComponent implements OnInit {
       }
     }
     return '';
+
   }
 
   ngOnInit(): void {
+    console.log("ngOnInit()")
     this.loadUsers();
     this.loadRoles();
 
   }
 
   loadUsers(): void {
+    console.log("loadUsers()")
     this.userService.getUsers().subscribe({
       next: (users) => {
         this.users = users;
         console.log('\n====> All Users:', users);
         users.forEach(user => {
-          console.log('User ID:', user.user_id);
-          console.log('Username:', user.username);
-          console.log('Roles:', user.roles);
+          console.log('rUser ID:', user.user_id);
+          console.log('rUsername:', user.username);
+          console.log('rRoles:', user.roles);
           console.log('------------------------');
         });
       },
@@ -124,9 +131,9 @@ export class UserComponent implements OnInit {
     });
   }
 
-
-
   loadRoles(): void {
+    console.log("user.components.ts: loadRoles()")
+
     this.userService.getAllRoles().subscribe(
       roles => this.roles = roles
     );
@@ -134,6 +141,7 @@ export class UserComponent implements OnInit {
 
   //do I need this???
   updateUserRoles(userId: string, roleIds: string[]): void {
+    console.log("updateUserRoles()")
     this.userService.updateUserRoles(userId, roleIds).subscribe(
       () => {
         this.loadUsers();
@@ -143,14 +151,19 @@ export class UserComponent implements OnInit {
       }
     );
   }
+
   openModal(user?: User): void {
+    console.log("openModal()")
     this.errorMessage = ''; // Clear previous errors
     try {
       this.isModalOpen = true;
       this.isEditing = !!user;
 
+      console.log("open modal, user =", user)
+
       if (user) {
         console.log('1. Original user:', user);
+        this.currentUserId = user.user_id;
 
         // Check if roles exist before trying to map them
         if (user.roles) {
@@ -199,6 +212,7 @@ export class UserComponent implements OnInit {
   // Compare function for select [compareWith]
   // Update the select template to use role_id as value
   compareRoles(role1: string, role2: string): boolean {
+    // console.log("compareRoles()")
     return role1 === role2;
   }
 
@@ -210,15 +224,18 @@ export class UserComponent implements OnInit {
 
 
   closeModal(): void {
+    console.log("closeModal()")
     this.errorMessage = ''; // Clear errors
     this.isModalOpen = false;
     this.userForm.reset();
   }
 
   onSubmit(): void {
+    console.log("onSubmit()")
     this.submitted = true;
 
     if (this.userForm.valid) {
+      console.log("onSubmit():userForm.Valid=true")
       const formValue = this.userForm.value;
       console.log('Form Value:', formValue);
 
@@ -237,9 +254,13 @@ export class UserComponent implements OnInit {
         password: formValue.password
       };
 
-      console.log('User Data being sent:', userData);
+      console.log('11) User Data being sent:', userData);
+      console.log('12)Current User ID:', this.currentUserId)
+      console.log('13) Is Editing:', this.isEditing)
+
 
       if (this.isEditing && this.currentUserId) {
+        console.log("(this.isEditing && this.currentUserId)")
         // Don't send password for updates
         delete userData.password;
         this.userService.updateUser(this.currentUserId, userData)
@@ -304,6 +325,7 @@ export class UserComponent implements OnInit {
 
 
   onRoleChange(event: any, roleId: string): void {
+    console.log("onRoleChange()")
     const rolesFormControl = this.userForm.get('roles');
     const currentRoles = new Set(rolesFormControl?.value || []);
 

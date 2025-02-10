@@ -6,14 +6,14 @@ module.exports = new EntitySchema({
     columns: {
         user_id: {
             primary: true,
-            type: "varchar",
-            generated: false
+            type: "varchar"
         },
         username: {
             type: "varchar"
         },
         email: {
-            type: "varchar"
+            type: "varchar",
+            unique: true
         },
         password_hash: {
             type: "varchar"

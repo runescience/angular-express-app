@@ -6,27 +6,10 @@ module.exports = new EntitySchema({
     columns: {
         role_id: {
             primary: true,
-            type: "varchar",
-            generated: false
+            type: "varchar"
         },
         role_name: {
             type: "varchar"
-        },
-        description: {
-            type: "varchar",
-            nullable: true
-        },
-        is_active: {
-            type: "boolean",
-            default: true
-        },
-        created_on: {
-            type: "datetime",
-            createDate: true
-        },
-        updated_on: {
-            type: "datetime",
-            updateDate: true
         }
     },
     relations: {

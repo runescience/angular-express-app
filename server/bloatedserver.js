@@ -787,6 +787,8 @@ app.delete("/api/events/:id", (req, res) => {
     });
 });
 
+
+
 // Internal Messages CRUD endpoints
 app.get("/api/internal-messages", (req, res) => {
     db.all("SELECT * FROM internal_messages", [], (err, rows) => {
@@ -880,6 +882,9 @@ app.delete("/api/internal-messages/:id", (req, res) => {
         },
     );
 });
+
+
+
 
 // Users endpoints
 
@@ -983,6 +988,9 @@ app.delete("/api/users/:id", (req, res) => {
         res.status(200).json({ message: "User deleted successfully" });
     });
 });
+
+
+
 
 // Approval Stages endpoints
 app.get("/api/approval-stages", (req, res) => {
