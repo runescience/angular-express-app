@@ -2,106 +2,96 @@ const { EntitySchema } = require("typeorm");
 const { v4: uuidv4 } = require("uuid");
 
 module.exports = new EntitySchema({
-    name: "ApprovalStage",
-    tableName: "approval_stages",
+    name: "Case",
+    tableName: "cases",
     columns: {
-        stage_id: {
+        id: {
             primary: true,
             type: "varchar",
             length: 8,
             generated: true,
-            default: () => `substring(uuid_generate_v4(), 1, 8)` // Generate UUID
+            default: () => `substring(uuid_generate_v4(), 1, 8)`, // Generate UUID
         },
-        stage_name: {
+        case_number: {
             type: "varchar",
-            length: 100,
+            unique: true,
+            nullable: false,
+            default: () => `substring(uuid_generate_v4(), 1, 8)`, // Generate UUID
+        },
+        workflow_id: {
+            type: "varchar",
             nullable: false,
         },
-        next_stage_name: {
+        current_role_id: {
             type: "varchar",
-            length: 100,
-            nullable: true,
+            nullable: false,
         },
-        last_stage_name: {
+        current_stage_id: {
             type: "varchar",
-            length: 100,
             nullable: true,
         },
         created_on: {
             type: "timestamp",
             default: () => "CURRENT_TIMESTAMP",
         },
-        modified_on: {
+        updated_on: {
             type: "timestamp",
             default: () => "CURRENT_TIMESTAMP",
             onUpdate: "CURRENT_TIMESTAMP",
-        },
-        author: {
-            type: "varchar",
-            length: 100,
-            nullable: false,
         },
         modified_by: {
             type: "varchar",
             length: 100,
             nullable: true,
         },
-        is_first: {
-            type: "boolean",
-            default: false,
+        assigned_user_id: {
+            type: "varchar",
+            nullable: true,
         },
-        is_last: {
-            type: "boolean",
-            default: false,
-        },
-        order: {
-            type: "int",
+        author_username: {
+            type: "varchar",
             nullable: false,
         },
-        conditions: {
+        status: {
             type: "varchar",
-            nullable: true,
-        },
-        workflow_template_id: {
-            type: "varchar",
-            nullable: true,
-        },
-        approve_role_id: {
-            type: "varchar",
-            nullable: true,
-        },
-        deny_role_id: {
-            type: "varchar",
+            length: 20,
+            default: "active",
             nullable: true,
         },
     },
     relations: {
+        comments: {
+            target: "Comment",
+            type: "one-to-many",
+            inverseSide: "case",
+            cascade: true,
+        },
         workflow_template: {
             target: "WorkflowTemplate",
             type: "many-to-one",
             joinColumn: {
-                name: "workflow_template_id",
+                name: "workflow_id",
                 referencedColumnName: "id",
             },
-            onDelete: "SET NULL"
+            onDelete: "CASCADE",
         },
-        approve_role: {
-            target: "Role",
+        approval_stage: {
+            target: "ApprovalStage",
             type: "many-to-one",
             joinColumn: {
-                name: "approve_role_id",
-                referencedColumnName: "role_id",
+                name: "current_stage_id",
+                referencedColumnName: "stage_id",
             },
-            onDelete: "SET NULL"
+            onDelete: "SET NULL",
         },
-        deny_role: {
-            target: "Role",
+        user: {
+            target: "User",
             type: "many-to-one",
             joinColumn: {
-                name: "deny_role_id",
-                referencedColumnName: "role_id",
+                name: "assigned_user_id",
+                referencedColumnName: "user_id",
             },
-            onDelete: "SET NULL"
+            onDelete: "SET NULL",
         },
     },
 });

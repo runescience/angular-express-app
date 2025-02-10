@@ -6,30 +6,30 @@ module.exports = new EntitySchema({
     columns: {
         user_id: {
             primary: true,
-            type: "varchar"
+            type: "varchar",
         },
         username: {
-            type: "varchar"
+            type: "varchar",
         },
         email: {
             type: "varchar",
-            unique: true
+            unique: true,
         },
         password_hash: {
-            type: "varchar"
+            type: "varchar",
         },
         is_active: {
             type: "boolean",
-            default: true
+            default: true,
         },
         created_on: {
             type: "datetime",
-            createDate: true
+            createDate: true,
         },
         updated_on: {
             type: "datetime",
-            updateDate: true
-        }
+            updateDate: true,
+        },
     },
     relations: {
         roles: {
@@ -39,13 +39,13 @@ module.exports = new EntitySchema({
                 name: "user_roles",
                 joinColumn: {
                     name: "user_id",
-                    referencedColumnName: "user_id"
+                    referencedColumnName: "user_id",
                 },
                 inverseJoinColumn: {
                     name: "role_id",
-                    referencedColumnName: "role_id"
-                }
-            }
-        }
-    }
+                    referencedColumnName: "role_id",
+                },
+            },
+        },
+    },
 });

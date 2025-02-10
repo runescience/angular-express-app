@@ -1,5 +1,11 @@
 // src/app/role/role.entity.ts
-import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 @Entity('roles')
@@ -14,10 +20,10 @@ export class Role {
   description!: string;
 
   @CreateDateColumn()
-  created_on!: Date;
+  created_on: Date = new Date();
 
   @UpdateDateColumn()
-  updated_on!: Date;
+  updated_on: Date = new Date();
 
   @Column({ default: true })
   is_active!: boolean;

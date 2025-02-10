@@ -1,6 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable, BeforeInsert, PrimaryColumn } from 'typeorm';
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
+    ManyToMany,
+    JoinTable,
+    BeforeInsert,
+    PrimaryColumn,
+} from 'typeorm';
 import { Role } from './role.entity';
-import { v4 as uuidv4 } from 'uuid';  // You'll need to install uuid package if not already installed
+import { v4 as uuidv4 } from 'uuid'; // You'll need to install uuid package if not already installed
 
 @Entity('users')
 export class User {
@@ -17,25 +27,25 @@ export class User {
     password_hash!: string;
 
     @Column({ default: true })
-    is_active!: boolean;
+    is_active: boolean = true;
 
     @CreateDateColumn()
-    created_on!: Date;
+    created_on: Date = new Date();
 
     @UpdateDateColumn()
-    updated_on!: Date;
+    updated_on: Date = new Date();
 
     @ManyToMany(() => Role)
     @JoinTable({
         name: 'user_roles',
         joinColumn: {
             name: 'user_id',
-            referencedColumnName: 'user_id'
+            referencedColumnName: 'user_id',
         },
         inverseJoinColumn: {
             name: 'role_id',
-            referencedColumnName: 'role_id'
-        }
+            referencedColumnName: 'role_id',
+        },
     })
     roles!: Role[];
 

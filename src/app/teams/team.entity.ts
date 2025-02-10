@@ -14,10 +14,10 @@ export class Team {
   author!: string;
 
   @CreateDateColumn()
-  created_on!: Date;
+  created_on: Date = new Date();
 
   @UpdateDateColumn()
-  updated_on!: Date;
+  updated_on: Date = new Date();
 
   @Column({ default: true })
   is_active!: boolean;

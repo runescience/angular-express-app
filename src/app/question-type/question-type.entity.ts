@@ -7,34 +7,34 @@ export class QuestionTypeEntity {
   question_type_id: string = uuidv4().substring(0, 8);
 
   @Column()
-  type: string;
+  type!: string;
 
   @Column({ default: true })
-  is_active: boolean;
+  is_active: boolean = true;
 
-  @Column()
-  has_regex: boolean;
+  @Column({ default: false })
+  has_regex!: boolean;
 
   @Column({ nullable: true })
   regex_str?: string;
 
-  @Column()
-  has_options: boolean;
+  @Column({ default: false )
+  has_options: boolean = false;
 
   @Column({ nullable: true })
   options_str?: string;
 
-  @Column()
-  has_supplemental: boolean;
+  @Column({ default: false })
+  has_supplemental: boolean = false;
 
   @Column({ nullable: true })
   supplemental_str?: string;
 
   @CreateDateColumn()
-  created_on: Date;
+  created_on: Date = new Date();
 
   @UpdateDateColumn()
-  updated_on: Date;
+  updated_on: Date = new Date()
 
   @Column({ nullable: true })
   author?: string;
