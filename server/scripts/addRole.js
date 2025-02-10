@@ -6,7 +6,7 @@ const newRole = {
     author: "betty",
     description: "Admin role",
     created_on: new Date(),
-    updated_at: new Date(),
+    updated_on: new Date(),
     is_active: true,
 };
 

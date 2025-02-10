@@ -24,7 +24,7 @@ const db = new sqlite3.Database('users.db', (err) => {
                 role_name TEXT NOT NULL,
                 description TEXT,
                 created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 is_active INTEGER DEFAULT 1
             )
         `);
@@ -37,8 +37,8 @@ const db = new sqlite3.Database('users.db', (err) => {
                 email TEXT NOT NULL UNIQUE,
                 password_hash TEXT NOT NULL,
                 is_active INTEGER DEFAULT 1,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         `);
 
@@ -65,8 +65,8 @@ const db = new sqlite3.Database('users.db', (err) => {
                 options_str TEXT,
                 has_supplemental INTEGER DEFAULT 0,
                 supplemental_str TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 author TEXT
             )
         `);
@@ -78,8 +78,8 @@ const db = new sqlite3.Database('users.db', (err) => {
                 question_text TEXT NOT NULL,
                 question_help TEXT,
                 question_type_id TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 author TEXT,
                 FOREIGN KEY (question_type_id) REFERENCES question_types (question_type_id)
             )
@@ -92,8 +92,8 @@ const db = new sqlite3.Database('users.db', (err) => {
                 title TEXT NOT NULL,
                 role_ids TEXT NOT NULL,
                 question_ids TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 author TEXT NOT NULL
             )
         `);
@@ -106,8 +106,8 @@ const db = new sqlite3.Database('users.db', (err) => {
                 workflow_id TEXT NOT NULL,
                 current_role_id TEXT NOT NULL,
                 current_stage_id TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 modified_by TEXT,
                 user_id TEXT,
                 author_username TEXT NOT NULL,
@@ -124,7 +124,7 @@ const db = new sqlite3.Database('users.db', (err) => {
                 content TEXT NOT NULL,
                 user_id TEXT NOT NULL,
                 replying_to_id TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 question_id TEXT,
                 case_id TEXT NOT NULL,
                 FOREIGN KEY (replying_to_id) REFERENCES comments (comment_id),
@@ -143,7 +143,7 @@ const db = new sqlite3.Database('users.db', (err) => {
                 question_id TEXT NOT NULL,
                 user_id TEXT,
                 answer_text TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (case_id) REFERENCES cases (id),
                 FOREIGN KEY (workflow_id) REFERENCES workflow_templates (id),
                 FOREIGN KEY (question_id) REFERENCES questions (question_id),
@@ -262,8 +262,8 @@ app.post('/api/questions', (req, res) => {
                 question_help,
                 question_type_id,
                 author,
-                created_at: new Date(),
-                updated_at: new Date()
+                created_on: new Date(),
+                updated_on: new Date()
             });
         }
     );
@@ -277,7 +277,7 @@ app.put('/api/questions/:id', (req, res) => {
 
     db.run(
         `UPDATE questions
-         SET question_text = ?, question_help = ?, question_type_id = ?, author = ?, updated_at = CURRENT_TIMESTAMP
+         SET question_text = ?, question_help = ?, question_type_id = ?, author = ?, updated_on = CURRENT_TIMESTAMP
          WHERE question_id = ?`,
         [question_text, question_help, question_type_id, author, id],
         function (err) {
@@ -365,8 +365,8 @@ app.post('/api/workflow-templates', (req, res) => {
                 role_ids,
                 question_ids,
                 author,
-                created_at: new Date(),
-                updated_at: new Date()
+                created_on: new Date(),
+                updated_on: new Date()
             });
         }
     );
@@ -379,7 +379,7 @@ app.put('/api/workflow-templates/:id', (req, res) => {
 
     db.run(
         `UPDATE workflow_templates
-         SET title = ?, role_ids = ?, question_ids = ?, author = ?, updated_at = CURRENT_TIMESTAMP
+         SET title = ?, role_ids = ?, question_ids = ?, author = ?, updated_on = CURRENT_TIMESTAMP
          WHERE id = ?`,
         [title, role_ids, question_ids, author, id],
         function (err) {
@@ -469,8 +469,8 @@ app.post('/api/users', (req, res) => {
                 username,
                 email,
                 is_active,
-                created_at: new Date(),
-                updated_at: new Date()
+                created_on: new Date(),
+                updated_on: new Date()
             });
         }
     );
@@ -483,7 +483,7 @@ app.put('/api/users/:id', (req, res) => {
 
     db.run(
         `UPDATE users
-         SET username = ?, email = ?, password_hash = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP
+         SET username = ?, email = ?, password_hash = ?, is_active = ?, updated_on = CURRENT_TIMESTAMP
          WHERE user_id = ?`,
         [username, email, password_hash, is_active, id],
         function (err) {

@@ -48,7 +48,7 @@
       "description": "Test Description",
       "author": "John Doe",
       "created_on": "2025-02-04 05:50:25",
-      "updated_at": "2025-02-04 05:50:25",
+      "updated_on": "2025-02-04 05:50:25",
       "is_active": 1
     },
     {
@@ -57,7 +57,7 @@
       "description": "some legal ",
       "author": "mara",
       "created_on": "2025-02-04 06:13:16",
-      "updated_at": "2025-02-04 06:13:16",
+      "updated_on": "2025-02-04 06:13:16",
       "is_active": 1
     },
     {
@@ -66,7 +66,7 @@
       "description": "mysubmitter",
       "author": "marabella",
       "created_on": "2025-02-04 17:01:30",
-      "updated_at": "2025-02-04 17:55:09",
+      "updated_on": "2025-02-04 17:55:09",
       "is_active": 1
     }
   ],

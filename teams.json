@@ -1,0 +1,22 @@
+{
+  "total_teams": 2,
+  "exported_at": "2025-02-09T18:47:27.759Z",
+  "teams": [
+    {
+      "id": "d3e0d146",
+      "teamName": "blue",
+      "author": "joel",
+      "created_on": "2025-02-09 18:34:00",
+      "updated_on": "2025-02-09 18:34:00",
+      "is_active": true
+    },
+    {
+      "id": "da66970a",
+      "teamName": "Red",
+      "author": "joel",
+      "created_on": "2025-02-09 18:33:53",
+      "updated_on": "2025-02-09 18:33:53",
+      "is_active": true
+    }
+  ]
+}

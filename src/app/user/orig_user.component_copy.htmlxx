@@ -2,10 +2,6 @@
 <div class="container">
     <h2>Users Management</h2>
 
-    <div *ngIf="errorMessage" class="alert alert-danger">
-        {{ errorMessage }}
-    </div>
-
     <button class="btn btn-primary mb-3" (click)="openModal()">Add New User</button>
 
     <table class="table table-striped">
@@ -15,8 +11,6 @@
                 <th>Email</th>
                 <th>Status</th>
                 <th>Roles</th>
-                <th>Roles</th>
-
                 <th>Created At</th>
                 <th>Actions</th>
             </tr>
@@ -25,35 +19,13 @@
             <tr *ngFor="let user of users">
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
+                <td>{{ user.roles }}</td>
                 <td>{{ user.is_active ? 'Active' : 'Inactive' }}</td>
-
-                <td>role
-                    <span class="badge bg-secondary me-1" *ngFor="let role of user.roles">
-                        {{ role.role_name }}
-                    </span>
-                </td>
-                <td>
-                    <!-- Debug output -->
-                    <pre>{{ user.roles | json }}</pre>
-
-                    <!-- Original code -->
-                    role
-                    <span class="badge bg-secondary me-1" *ngFor="let role of user.roles">
-                        {{ role.role_name }}
-                    </span>
-                </td>
-
                 <td>{{ user.created_on | date }}</td>
                 <td>
                     <button class="btn btn-sm btn-info me-2" (click)="openModal(user)">Edit</button>
-
-
-
-
                     <button class="btn btn-sm btn-danger" (click)="deleteUser(user.user_id)">Delete</button>
                 </td>
-
-
             </tr>
         </tbody>
     </table>
@@ -64,55 +36,28 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ isEditing ? 'Edit User' : 'Add New User' }}</h5>
-
+                    <button type="button" class="btn-close" (click)="closeModal()"></button>
                 </div>
                 <div class="modal-body">
-
-
                     <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
                         <div class="mb-3">
                             <label class="form-label">Username</label>
                             <input type="text" class="form-control" formControlName="username">
                         </div>
-
-
                         <div class="mb-3">
                             <label class="form-label">Email</label>
                             <input type="email" class="form-control" formControlName="email">
                         </div>
-
-
-                        <!-- Always show password field for new users -->
                         <div class="mb-3" *ngIf="!isEditing">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" formControlName="password"
-                                required>
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" formControlName="password">
                         </div>
-
-                        <!-- Show optional password field for existing users -->
-                        <div class="mb-3" *ngIf="isEditing">
-                            <label for="password" class="form-label">New Password (leave blank to keep current)</label>
-                            <input type="password" class="form-control" id="password" formControlName="password">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Roles</label>
-                            <select multiple class="form-select" formControlName="roles" [compareWith]="compareRoles">
-                                <option *ngFor="let role of roles" [value]="role.role_id">
-                                    {{ role.role_name }}
-                                </option>
-                            </select>
-
-                        </div>
-
                         <div class="mb-3">
                             <label class="form-check-label">
                                 <input type="checkbox" class="form-check-input" formControlName="is_active">
                                 Active
                             </label>
                         </div>
-
-
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
                             <button type="submit" class="btn btn-primary" [disabled]="!userForm.valid">

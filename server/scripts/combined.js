@@ -36,7 +36,7 @@ const db = new sqlite3.Database('teams.db', (err) => {
                 role_name TEXT NOT NULL,
                 description TEXT,
                 created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 is_active INTEGER DEFAULT 1
             )
         `);
@@ -49,8 +49,8 @@ const db = new sqlite3.Database('teams.db', (err) => {
                 email TEXT NOT NULL UNIQUE,
                 password_hash TEXT NOT NULL,
                 is_active INTEGER DEFAULT 1,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         `);
 
@@ -77,8 +77,8 @@ const db = new sqlite3.Database('teams.db', (err) => {
                 options_str TEXT,
                 has_supplemental INTEGER DEFAULT 0,
                 supplemental_str TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 author TEXT
             )
         `);
@@ -90,8 +90,8 @@ const db = new sqlite3.Database('teams.db', (err) => {
                 question_text TEXT NOT NULL,
                 question_help TEXT,
                 question_type_id TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 author TEXT,
                 FOREIGN KEY (question_type_id) REFERENCES question_types (question_type_id)
             )
@@ -104,8 +104,8 @@ const db = new sqlite3.Database('teams.db', (err) => {
                 title TEXT NOT NULL,
                 role_ids TEXT NOT NULL,
                 question_ids TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 author TEXT NOT NULL
             )
         `);
@@ -117,8 +117,8 @@ const db = new sqlite3.Database('teams.db', (err) => {
                 stage_name TEXT NOT NULL,
                 next_stage_name TEXT,
                 last_stage_name TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                modified_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                modified_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 author TEXT NOT NULL,
                 modified_by TEXT,
                 is_first INTEGER DEFAULT 0,
@@ -142,7 +142,7 @@ const db = new sqlite3.Database('teams.db', (err) => {
                 subject TEXT NOT NULL,
                 content TEXT NOT NULL,
                 is_read INTEGER DEFAULT 0,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (to_user_id) REFERENCES users (user_id)
             )
         `);
@@ -156,8 +156,8 @@ const db = new sqlite3.Database('teams.db', (err) => {
                 version TEXT,
                 supercedes TEXT,
                 author TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         `);
 
@@ -169,7 +169,7 @@ const db = new sqlite3.Database('teams.db', (err) => {
                 event_type TEXT NOT NULL,
                 old_value TEXT,
                 new_value TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (case_id) REFERENCES cases (id)
             )
         `);
@@ -381,8 +381,8 @@ app.post('/api/questions', (req, res) => {
                 question_help,
                 question_type_id,
                 author,
-                created_at: new Date(),
-                updated_at: new Date()
+                created_on: new Date(),
+                updated_on: new Date()
             });
         }
     );
@@ -434,8 +434,8 @@ app.post('/api/workflow-templates', (req, res) => {
                 role_ids,
                 question_ids,
                 author,
-                created_at: new Date(),
-                updated_at: new Date()
+                created_on: new Date(),
+                updated_on: new Date()
             });
         }
     );
@@ -501,8 +501,8 @@ app.post('/api/approval-stages', (req, res) => {
                 workflow_template_id,
                 approve_role_id,
                 deny_role_id,
-                created_at: new Date(),
-                modified_at: new Date()
+                created_on: new Date(),
+                modified_on: new Date()
             });
         }
     );
@@ -516,7 +516,7 @@ app.put('/api/approval-stages/:id', (req, res) => {
         `UPDATE approval_stages 
          SET stage_name = ?, next_stage_name = ?, last_stage_name = ?, modified_by = ?,
              is_first = ?, is_last = ?, order_num = ?, conditions = ?, workflow_template_id = ?,
-             approve_role_id = ?, deny_role_id = ?, modified_at = CURRENT_TIMESTAMP
+             approve_role_id = ?, deny_role_id = ?, modified_on = CURRENT_TIMESTAMP
          WHERE stage_id = ?`,
         [stage_name, next_stage_name, last_stage_name, modified_by, is_first ? 1 : 0, is_last ? 1 : 0,
             order_num, conditions, workflow_template_id, approve_role_id, deny_role_id, req.params.id],
@@ -543,7 +543,7 @@ app.put('/api/approval-stages/:id', (req, res) => {
                 workflow_template_id,
                 approve_role_id,
                 deny_role_id,
-                modified_at: new Date()
+                modified_on: new Date()
             });
         }
     );

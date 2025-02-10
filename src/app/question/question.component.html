@@ -27,8 +27,8 @@
                     <td>{{ question.questionTypeName }}</td>
 
                     <td>{{ question.author }}</td>
-                    <td>{{ question.created_at | date }}</td>
-                    <td>{{ question.updated_at | date }}</td>
+                    <td>{{ question.created_on | date }}</td>
+                    <td>{{ question.updated_on | date }}</td>
                     <td>{{ question.is_active ? 'Active' : 'Inactive' }}</td>
                     <td>
                         <button (click)="editQuestion(question)" [disabled]="loading">Edit</button>

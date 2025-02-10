@@ -9,7 +9,7 @@ export interface QuestionType {
   options_str?: string;
   has_supplemental: boolean;
   supplemental_str?: string;
-  created_at: Date;
-  updated_at: Date;
+  created_on: Date;
+  updated_on: Date;
   author?: string;
 }

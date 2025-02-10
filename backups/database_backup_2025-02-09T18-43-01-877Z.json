@@ -1,0 +1,1069 @@
+{
+  "database_name": "teams.db",
+  "exported_at": "2025-02-09T18:43:01.864Z",
+  "tables": {
+    "user_roles": {
+      "schema": [
+        {
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "role_id",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 0,
+      "data": []
+    },
+    "list_options": {
+      "schema": [
+        {
+          "name": "id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "name",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "list_data",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "version",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "supercedes",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "author",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "created_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "updated_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "1",
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 0,
+      "data": []
+    },
+    "approval_stages": {
+      "schema": [
+        {
+          "name": "stage_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "stage_name",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "next_stage_name",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "last_stage_name",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "created_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "modified_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "author",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "modified_by",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "is_first",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "0",
+          "is_primary_key": false
+        },
+        {
+          "name": "is_last",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "0",
+          "is_primary_key": false
+        },
+        {
+          "name": "order_num",
+          "type": "INTEGER",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "conditions",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "workflow_template_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "approve_role_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "deny_role_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "1",
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 0,
+      "data": []
+    },
+    "internal_messages": {
+      "schema": [
+        {
+          "name": "id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "to_user_id",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "subject",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "content",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "is_read",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "0",
+          "is_primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "1",
+          "is_primary_key": false
+        },
+        {
+          "name": "created_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 0,
+      "data": []
+    },
+    "events": {
+      "schema": [
+        {
+          "name": "id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "case_id",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "event_type",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "old_value",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "new_value",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "created_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 0,
+      "data": []
+    },
+    "option_lists": {
+      "schema": [
+        {
+          "name": "id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "name",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "list_data",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "version",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "supercedes",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "author",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "1",
+          "is_primary_key": false
+        },
+        {
+          "name": "created_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "updated_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 0,
+      "data": []
+    },
+    "users": {
+      "schema": [
+        {
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "username",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "email",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "password_hash",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "1",
+          "is_primary_key": false
+        },
+        {
+          "name": "created_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "updated_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 3,
+      "data": [
+        {
+          "user_id": "9fece200",
+          "username": "cara",
+          "email": "cara@gmail.com",
+          "password_hash": "$2b$10$HCTqQTrKBw7392drVBfAp.xodyecmtEwfY7Ie6RxU4MXhUkj9jO/i",
+          "is_active": 1,
+          "created_on": "2025-02-09 18:35:51",
+          "updated_on": "2025-02-09 18:35:51"
+        },
+        {
+          "user_id": "73796e37",
+          "username": "joel",
+          "email": "joel@gmail.com",
+          "password_hash": "$2b$10$DDmEtaC5tLC0FmaFUmSU2eQwIpZRXyDKqQxcD17gTdJ.N2XABxiti",
+          "is_active": 1,
+          "created_on": "2025-02-09 18:36:17",
+          "updated_on": "2025-02-09 18:36:17"
+        },
+        {
+          "user_id": "0cfa7961",
+          "username": "dave",
+          "email": "dave@gmail.com",
+          "password_hash": "$2b$10$ZVujziWndzgZV1KcToS0Me35.G/5y9fz2C4ecpzqtvZhETmDVGshe",
+          "is_active": 1,
+          "created_on": "2025-02-09 18:36:41",
+          "updated_on": "2025-02-09 18:36:41"
+        }
+      ]
+    },
+    "teams": {
+      "schema": [
+        {
+          "name": "id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "teamName",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "author",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "created_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "updated_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "1",
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 2,
+      "data": [
+        {
+          "id": "da66970a",
+          "teamName": "Red",
+          "author": "joel",
+          "created_on": "2025-02-09 18:33:53",
+          "updated_on": "2025-02-09 18:33:53",
+          "is_active": 1
+        },
+        {
+          "id": "d3e0d146",
+          "teamName": "blue",
+          "author": "joel",
+          "created_on": "2025-02-09 18:34:00",
+          "updated_on": "2025-02-09 18:34:00",
+          "is_active": 1
+        }
+      ]
+    },
+    "answers": {
+      "schema": [
+        {
+          "name": "id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "case_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "case_number",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "workflow_id",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "question_id",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "answer_text",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "created_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "1",
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 0,
+      "data": []
+    },
+    "workflow_templates": {
+      "schema": [
+        {
+          "name": "id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "title",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "role_ids",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "question_ids",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "created_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "updated_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "1",
+          "is_primary_key": false
+        },
+        {
+          "name": "author",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 0,
+      "data": []
+    },
+    "question_types": {
+      "schema": [
+        {
+          "name": "question_type_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "type",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "1",
+          "is_primary_key": false
+        },
+        {
+          "name": "has_regex",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "0",
+          "is_primary_key": false
+        },
+        {
+          "name": "regex_str",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "has_options",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "0",
+          "is_primary_key": false
+        },
+        {
+          "name": "options_str",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "has_supplemental",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "0",
+          "is_primary_key": false
+        },
+        {
+          "name": "supplemental_str",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "created_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "updated_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "author",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 0,
+      "data": []
+    },
+    "questions": {
+      "schema": [
+        {
+          "name": "question_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "question_text",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "question_help",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "question_type_id",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "created_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "updated_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "author",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "1",
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 0,
+      "data": []
+    },
+    "roles": {
+      "schema": [
+        {
+          "name": "role_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "role_name",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "author",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "created_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "updated_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "1",
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 5,
+      "data": [
+        {
+          "role_id": "95a6198c",
+          "role_name": "submitter",
+          "description": "sub",
+          "author": "joel",
+          "created_on": "2025-02-09 18:34:16",
+          "updated_on": "2025-02-09 18:34:16",
+          "is_active": 1
+        },
+        {
+          "role_id": "cc4e6f1c",
+          "role_name": "reviewer1",
+          "description": "revewr",
+          "author": "joel",
+          "created_on": "2025-02-09 18:34:26",
+          "updated_on": "2025-02-09 18:34:26",
+          "is_active": 1
+        },
+        {
+          "role_id": "788dd956",
+          "role_name": "legal1",
+          "description": "legal",
+          "author": "joel",
+          "created_on": "2025-02-09 18:34:39",
+          "updated_on": "2025-02-09 18:34:39",
+          "is_active": 1
+        },
+        {
+          "role_id": "3fafd270",
+          "role_name": "approver1",
+          "description": "apprvr",
+          "author": "joel",
+          "created_on": "2025-02-09 18:34:51",
+          "updated_on": "2025-02-09 18:34:51",
+          "is_active": 1
+        },
+        {
+          "role_id": "4051c039",
+          "role_name": "admin",
+          "description": "admin",
+          "author": "joel",
+          "created_on": "2025-02-09 18:35:07",
+          "updated_on": "2025-02-09 18:35:07",
+          "is_active": 1
+        }
+      ]
+    },
+    "cases": {
+      "schema": [
+        {
+          "name": "id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "case_number",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "workflow_id",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "current_role_id",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "current_stage_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "created_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "updated_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "modified_by",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "author_username",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "status",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": "'active'",
+          "is_primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "1",
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 0,
+      "data": []
+    },
+    "comments": {
+      "schema": [
+        {
+          "name": "comment_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": true
+        },
+        {
+          "name": "content",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "replying_to_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "created_on",
+          "type": "DATETIME",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "is_primary_key": false
+        },
+        {
+          "name": "question_id",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "case_id",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "is_primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "1",
+          "is_primary_key": false
+        }
+      ],
+      "row_count": 0,
+      "data": []
+    }
+  }
+}

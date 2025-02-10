@@ -109,7 +109,7 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 description TEXT,
                 author TEXT NOT NULL,
                 created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 is_active INTEGER DEFAULT 1
             )
         `);
@@ -137,8 +137,8 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 email TEXT NOT NULL UNIQUE,
                 password_hash TEXT NOT NULL,
                 is_active INTEGER DEFAULT 1,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         `);
 
@@ -165,8 +165,8 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 options_str TEXT,
                 has_supplemental INTEGER DEFAULT 0,
                 supplemental_str TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 author TEXT
             )
         `);
@@ -178,8 +178,8 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 question_text TEXT NOT NULL,
                 question_help TEXT,
                 question_type_id TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 author TEXT,
                 is_active INTEGER DEFAULT 1,
                 FOREIGN KEY (question_type_id) REFERENCES question_types (question_type_id)
@@ -193,8 +193,8 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 title TEXT NOT NULL,
                 role_ids TEXT NOT NULL,
                 question_ids TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 is_active INTEGER DEFAULT 1,
                 author TEXT NOT NULL
             )
@@ -208,8 +208,8 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 workflow_id TEXT NOT NULL,
                 current_role_id TEXT NOT NULL,
                 current_stage_id TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 modified_by TEXT,
                 user_id TEXT,
                 author_username TEXT NOT NULL,
@@ -227,7 +227,7 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 content TEXT NOT NULL,
                 user_id TEXT NOT NULL,
                 replying_to_id TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 question_id TEXT,
                 case_id TEXT NOT NULL,
                 is_active INTEGER DEFAULT 1,
@@ -248,7 +248,7 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 question_id TEXT NOT NULL,
                 user_id TEXT,
                 answer_text TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 is_active INTEGER DEFAULT 1,
 
                 FOREIGN KEY (case_id) REFERENCES cases (id),
@@ -264,8 +264,8 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 stage_name TEXT NOT NULL,
                 next_stage_name TEXT,
                 last_stage_name TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                modified_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                modified_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 author TEXT NOT NULL,
                 modified_by TEXT,
                 is_first INTEGER DEFAULT 0,
@@ -291,7 +291,7 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 content TEXT NOT NULL,
                 is_read INTEGER DEFAULT 0,
                 is_active INTEGER DEFAULT 1,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (to_user_id) REFERENCES users (user_id)
             )
         `);
@@ -306,8 +306,8 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 supercedes TEXT,
                 author TEXT NOT NULL,
                 is_active INTEGER DEFAULT 1,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_on DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         `);
 
@@ -319,7 +319,7 @@ const db = new sqlite3.Database("teams.db", (err) => {
                 event_type TEXT NOT NULL,
                 old_value TEXT,
                 new_value TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (case_id) REFERENCES cases (id)
             )
         `);
@@ -651,7 +651,7 @@ app.post("/api/roles", (req, res) => {
                 author,
                 is_active,
                 created_on: new Date(),
-                updated_at: new Date(),
+                updated_on: new Date(),
             });
         },
     );
@@ -663,7 +663,7 @@ app.put("/api/roles/:id", (req, res) => {
 
     db.run(
         `UPDATE roles 
-         SET role_name = ?, description = ?, author = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP 
+         SET role_name = ?, description = ?, author = ?, is_active = ?, updated_on = CURRENT_TIMESTAMP 
          WHERE role_id = ?`,
         [role_name, description, author, is_active ? 1 : 0, req.params.id],
         function (err) {
@@ -682,7 +682,7 @@ app.put("/api/roles/:id", (req, res) => {
                 description,
                 author,
                 is_active,
-                updated_at: new Date(),
+                updated_on: new Date(),
             });
         },
     );
@@ -734,7 +734,7 @@ app.post("/api/events", (req, res) => {
                 event_type,
                 old_value,
                 new_value,
-                created_at: new Date(),
+                created_on: new Date(),
             });
         },
     );
@@ -746,7 +746,7 @@ app.put("/api/events/:id", (req, res) => {
 
     db.run(
         `UPDATE events 
-         SET case_id = ?, event_type = ?, old_value = ?, new_value = ?, created_at = CURRENT_TIMESTAMP
+         SET case_id = ?, event_type = ?, old_value = ?, new_value = ?, created_on = CURRENT_TIMESTAMP
          WHERE id = ?`,
         [case_id, event_type, old_value, new_value, req.params.id],
         function (err) {
@@ -765,7 +765,7 @@ app.put("/api/events/:id", (req, res) => {
                 event_type,
                 old_value,
                 new_value,
-                created_at: new Date(),
+                created_on: new Date(),
             });
         },
     );
@@ -837,7 +837,7 @@ app.post("/api/internal-messages", (req, res) => {
                 subject,
                 content,
                 is_read: 0,
-                created_at: new Date(),
+                created_on: new Date(),
             });
         },
     );
@@ -934,8 +934,8 @@ app.post("/api/users", (req, res) => {
                 username,
                 email,
                 is_active,
-                created_at: new Date(),
-                updated_at: new Date(),
+                created_on: new Date(),
+                updated_on: new Date(),
             });
         },
     );
@@ -948,7 +948,7 @@ app.put("/api/users/:id", (req, res) => {
 
     db.run(
         `UPDATE users
-         SET username = ?, email = ?, password_hash = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP
+         SET username = ?, email = ?, password_hash = ?, is_active = ?, updated_on = CURRENT_TIMESTAMP
          WHERE user_id = ?`,
         [username, email, password_hash, is_active, id],
         function (err) {
@@ -1072,8 +1072,8 @@ app.post("/api/approval-stages", (req, res) => {
                 workflow_template_id,
                 approve_role_id,
                 deny_role_id,
-                created_at: new Date(),
-                modified_at: new Date(),
+                created_on: new Date(),
+                modified_on: new Date(),
             });
         },
     );
@@ -1098,7 +1098,7 @@ app.put("/api/approval-stages/:id", (req, res) => {
         `UPDATE approval_stages 
          SET stage_name = ?, next_stage_name = ?, last_stage_name = ?, modified_by = ?,
              is_first = ?, is_last = ?, order_num = ?, conditions = ?, workflow_template_id = ?,
-             approve_role_id = ?, deny_role_id = ?, modified_at = CURRENT_TIMESTAMP
+             approve_role_id = ?, deny_role_id = ?, modified_on = CURRENT_TIMESTAMP
          WHERE stage_id = ?`,
         [
             stage_name,
@@ -1137,7 +1137,7 @@ app.put("/api/approval-stages/:id", (req, res) => {
                 workflow_template_id,
                 approve_role_id,
                 deny_role_id,
-                modified_at: new Date(),
+                modified_on: new Date(),
             });
         },
     );
@@ -1240,8 +1240,8 @@ app.post("/api/question-types", (req, res) => {
                 supplemental_str,
                 author,
                 is_active: true,
-                created_at: new Date(),
-                updated_at: new Date(),
+                created_on: new Date(),
+                updated_on: new Date(),
             });
         },
     );
@@ -1264,7 +1264,7 @@ app.put("/api/question-types/:id", (req, res) => {
         `UPDATE question_types 
          SET type = ?, has_regex = ?, regex_str = ?, has_options = ?, options_str = ?,
          has_supplemental = ?, supplemental_str = ?, author = ?, is_active = ?,
-         updated_at = CURRENT_TIMESTAMP
+         updated_on = CURRENT_TIMESTAMP
          WHERE question_type_id = ?`,
         [
             type,
@@ -1299,7 +1299,7 @@ app.put("/api/question-types/:id", (req, res) => {
                 supplemental_str,
                 author,
                 is_active,
-                updated_at: new Date(),
+                updated_on: new Date(),
             });
         },
     );
@@ -1374,8 +1374,8 @@ app.post("/api/questions", (req, res) => {
                 question_help,
                 question_type_id,
                 author,
-                created_at: new Date(),
-                updated_at: new Date(),
+                created_on: new Date(),
+                updated_on: new Date(),
             });
         },
     );
@@ -1388,7 +1388,7 @@ app.put("/api/questions/:id", (req, res) => {
 
     db.run(
         `UPDATE questions
-         SET question_text = ?, question_help = ?, question_type_id = ?, author = ?, updated_at = CURRENT_TIMESTAMP
+         SET question_text = ?, question_help = ?, question_type_id = ?, author = ?, updated_on = CURRENT_TIMESTAMP
          WHERE question_id = ?`,
         [question_text, question_help, question_type_id, author, id],
         function (err) {
@@ -1474,8 +1474,8 @@ app.post("/api/workflow-templates", (req, res) => {
                 role_ids,
                 question_ids,
                 author,
-                created_at: new Date(),
-                updated_at: new Date(),
+                created_on: new Date(),
+                updated_on: new Date(),
             });
         },
     );
@@ -1488,7 +1488,7 @@ app.put("/api/workflow-templates/:id", (req, res) => {
 
     db.run(
         `UPDATE workflow_templates
-         SET title = ?, role_ids = ?, question_ids = ?, author = ?, updated_at = CURRENT_TIMESTAMP
+         SET title = ?, role_ids = ?, question_ids = ?, author = ?, updated_on = CURRENT_TIMESTAMP
          WHERE id = ?`,
         [title, role_ids, question_ids, author, id],
         function (err) {

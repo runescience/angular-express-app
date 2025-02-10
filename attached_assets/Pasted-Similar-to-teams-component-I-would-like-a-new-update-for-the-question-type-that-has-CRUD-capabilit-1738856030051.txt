@@ -24,8 +24,8 @@ class QuestionType(db.Model):
     supplemental_str = db.Column(
         db.String, nullable=True)  # Supplemental information string
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime,
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime,
                            default=datetime.utcnow,
                            onupdate=datetime.utcnow)
     author = db.Column(db.String, nullable=True)  # Author of the QuestionType

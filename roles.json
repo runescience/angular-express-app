@@ -1,0 +1,56 @@
+{
+  "total_roles": 5,
+  "exported_on": "2025-02-09T18:37:15.655Z",
+  "roles": [
+    {
+      "role_id": "4051c039",
+      "role_name": "admin",
+      "description": "admin",
+      "author": "joel",
+      "created_on": "2025-02-09 18:35:07",
+      "updated_on": "2025-02-09 18:35:07",
+      "is_active": true,
+      "user_count": 0
+    },
+    {
+      "role_id": "3fafd270",
+      "role_name": "approver1",
+      "description": "apprvr",
+      "author": "joel",
+      "created_on": "2025-02-09 18:34:51",
+      "updated_on": "2025-02-09 18:34:51",
+      "is_active": true,
+      "user_count": 0
+    },
+    {
+      "role_id": "788dd956",
+      "role_name": "legal1",
+      "description": "legal",
+      "author": "joel",
+      "created_on": "2025-02-09 18:34:39",
+      "updated_on": "2025-02-09 18:34:39",
+      "is_active": true,
+      "user_count": 0
+    },
+    {
+      "role_id": "cc4e6f1c",
+      "role_name": "reviewer1",
+      "description": "revewr",
+      "author": "joel",
+      "created_on": "2025-02-09 18:34:26",
+      "updated_on": "2025-02-09 18:34:26",
+      "is_active": true,
+      "user_count": 0
+    },
+    {
+      "role_id": "95a6198c",
+      "role_name": "submitter",
+      "description": "sub",
+      "author": "joel",
+      "created_on": "2025-02-09 18:34:16",
+      "updated_on": "2025-02-09 18:34:16",
+      "is_active": true,
+      "user_count": 0
+    }
+  ]
+}

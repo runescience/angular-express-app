@@ -1,0 +1,94 @@
+{
+  "total_users": 4,
+  "exported_at": "2025-02-10T00:50:14.287Z",
+  "users": [
+    {
+      "user_id": "43bc5d6a",
+      "username": "joel",
+      "email": "joel.siragher@gmail.com",
+      "full_name": null,
+      "roles": [
+        {
+          "role_id": "95a6198c",
+          "role_name": "submitter"
+        },
+        {
+          "role_id": "cc4e6f1c",
+          "role_name": "reviewer1"
+        }
+      ],
+      "created_on": "2025-02-10 00:49:34",
+      "is_active": false,
+      "last_login": null
+    },
+    {
+      "user_id": "44fe3eb4",
+      "username": "dave",
+      "email": "dave@gmail.com",
+      "full_name": null,
+      "roles": [
+        {
+          "role_id": "95a6198c",
+          "role_name": "submitter"
+        }
+      ],
+      "created_on": "2025-02-09 19:34:46",
+      "is_active": true,
+      "last_login": null
+    },
+    {
+      "user_id": "d1fa7e94",
+      "username": "mara",
+      "email": "mara@gmail.com",
+      "full_name": null,
+      "roles": [
+        {
+          "role_id": "788dd956",
+          "role_name": "legal1"
+        },
+        {
+          "role_id": "95a6198c",
+          "role_name": "submitter"
+        },
+        {
+          "role_id": "cc4e6f1c",
+          "role_name": "reviewer1"
+        }
+      ],
+      "created_on": "2025-02-09 19:34:27",
+      "is_active": true,
+      "last_login": null
+    },
+    {
+      "user_id": "4cb6b816",
+      "username": "joel",
+      "email": "joel@gmail.com",
+      "full_name": null,
+      "roles": [
+        {
+          "role_id": "3fafd270",
+          "role_name": "approver1"
+        },
+        {
+          "role_id": "4051c039",
+          "role_name": "admin"
+        },
+        {
+          "role_id": "788dd956",
+          "role_name": "legal1"
+        },
+        {
+          "role_id": "95a6198c",
+          "role_name": "submitter"
+        },
+        {
+          "role_id": "cc4e6f1c",
+          "role_name": "reviewer1"
+        }
+      ],
+      "created_on": "2025-02-09 19:33:25",
+      "is_active": true,
+      "last_login": null
+    }
+  ]
+}

@@ -19,7 +19,7 @@ class InternalMessage(db.Model):
     subject = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
     is_read = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Relationship with User
     recipient = db.relationship('User', backref='messages')
@@ -32,8 +32,8 @@ class Team(db.Model):
     team_name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     contact = db.Column(db.String(100), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime,
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime,
                            default=datetime.utcnow,
                            onupdate=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
@@ -49,7 +49,7 @@ class Role(db.Model):
     created_on = db.Column(db.DateTime,
                            default=datetime.utcnow,
                            nullable=False)
-    updated_at = db.Column(db.DateTime,
+    updated_on = db.Column(db.DateTime,
                            default=datetime.utcnow,
                            onupdate=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
@@ -78,8 +78,8 @@ class User(db.Model):
     email = db.Column(db.String(100), nullable=False, unique=True)
     password_hash = db.Column(db.String(128), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime,
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime,
                            default=datetime.utcnow,
                            onupdate=datetime.utcnow)
 
@@ -113,8 +113,8 @@ class QuestionType(db.Model):
     supplemental_str = db.Column(
         db.String, nullable=True)  # Supplemental information string
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime,
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime,
                            default=datetime.utcnow,
                            onupdate=datetime.utcnow)
     author = db.Column(db.String, nullable=True)  # Author of the QuestionType
@@ -147,9 +147,9 @@ class Question(db.Model):
         db.ForeignKey('question_types.question_type_id'),
         nullable=False)
 
-    created_at = db.Column(db.DateTime,
+    created_on = db.Column(db.DateTime,
                            default=datetime.utcnow)  # Creation timestamp
-    updated_at = db.Column(db.DateTime,
+    updated_on = db.Column(db.DateTime,
                            default=datetime.utcnow,
                            onupdate=datetime.utcnow)  # Update timestamp
 
@@ -178,7 +178,7 @@ class Comment(db.Model):
     replying_to_id = db.Column(db.String,
                                db.ForeignKey('comments.comment_id'),
                                nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
 
     # ForeignKey to link comments to questions (optional)
     question_id = db.Column(db.String,
@@ -209,14 +209,14 @@ class WorkflowTemplate(db.Model):
                          nullable=False)  # Store as comma-separated string
     question_ids = db.Column(db.String,
                              nullable=False)  # Store as comma-separated string
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime,
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime,
                            default=datetime.utcnow,
                            onupdate=datetime.utcnow)
     author = db.Column(db.String, nullable=False)
 
     def __repr__(self):
-        return f'\n<WorkflowTemplate ID: {self.id}, Title: {self.title}, Role IDs: {self.role_ids}, Question IDs: {self.question_ids}, Author: {self.author}, Updated At: {self.updated_at}>\n\n'
+        return f'\n<WorkflowTemplate ID: {self.id}, Title: {self.title}, Role IDs: {self.role_ids}, Question IDs: {self.question_ids}, Author: {self.author}, Updated At: {self.updated_on}>\n\n'
 
 
 # ================================================
@@ -267,7 +267,7 @@ class Answer(db.Model):
                         nullable=True)
     answer_text = db.Column(db.Text, nullable=False)
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return f'<Answer {self.answer_text} for Question {self.question_id}; Case Number: {self.case_number}>'
@@ -300,8 +300,8 @@ class Case(db.Model):
                                  db.ForeignKey('approval_stages.stage_id'),
                                  nullable=True)
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime,
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime,
                            default=datetime.utcnow,
                            onupdate=datetime.utcnow)
 
@@ -342,11 +342,11 @@ class Case(db.Model):
 
     @property
     def is_late(self):
-        return self.created_at + timedelta(days=3) < datetime.utcnow()
+        return self.created_on + timedelta(days=3) < datetime.utcnow()
 
     @property
     def is_overdue(self):
-        return self.created_at + timedelta(days=7) < datetime.utcnow()
+        return self.created_on + timedelta(days=7) < datetime.utcnow()
 
 
 class ScreenBuilder(db.Model):
@@ -361,9 +361,9 @@ class ScreenBuilder(db.Model):
 
     question_ids = db.Column(db.String,
                              nullable=False)  # Store as comma-separated string
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
 
-    modified_at = db.Column(db.DateTime,
+    modified_on = db.Column(db.DateTime,
                             default=datetime.utcnow,
                             onupdate=datetime.utcnow)
     author = db.Column(db.String(100), nullable=False)
@@ -382,8 +382,8 @@ class ApprovalStage(db.Model):
     stage_name = db.Column(db.String(100), nullable=False)
     next_stage_name = db.Column(db.String(100), nullable=True)
     last_stage_name = db.Column(db.String(100), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    modified_at = db.Column(db.DateTime,
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
+    modified_on = db.Column(db.DateTime,
                             default=datetime.utcnow,
                             onupdate=datetime.utcnow)
     author = db.Column(db.String(100), nullable=False)
@@ -422,8 +422,8 @@ class OptionList(db.Model):
     supercedes = db.Column(db.Text, nullable=True)
     author = db.Column(db.String, nullable=False)
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime,
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_on = db.Column(db.DateTime,
                            default=datetime.utcnow,
                            onupdate=datetime.utcnow)
 
@@ -442,6 +442,6 @@ class Event(db.Model):
                            nullable=False)  # 'status_change' or 'stage_change'
     old_value = db.Column(db.String(100))
     new_value = db.Column(db.String(100))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_on = db.Column(db.DateTime, default=datetime.utcnow)
 
     case = db.relationship('Case', backref='events')

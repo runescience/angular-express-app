@@ -17,7 +17,7 @@ export class Role {
   created_on!: Date;
 
   @UpdateDateColumn()
-  updated_at!: Date;
+  updated_on!: Date;
 
   @Column({ default: true })
   is_active!: boolean;

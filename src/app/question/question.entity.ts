@@ -17,10 +17,10 @@ export class Question {
   question_type_id!: string;
 
   @CreateDateColumn()
-  created_at!: Date;
+  created_on!: Date;
 
   @UpdateDateColumn()
-  updated_at!: Date;
+  updated_on!: Date;
 
   @Column()
   author!: string;

@@ -35,7 +35,7 @@ class RoleForm(FlaskForm):
     description = TextAreaField('Description')
     is_active = BooleanField('Active')
     created_on = DateTimeField('Created On', render_kw={'readonly': True})
-    updated_at = DateTimeField('Updated At', render_kw={'readonly': True})
+    updated_on = DateTimeField('Updated At', render_kw={'readonly': True})
 
 
 class UserForm(FlaskForm):

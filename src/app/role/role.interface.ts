@@ -5,7 +5,7 @@ export interface Role {
   description?: string;
   author: string;
   created_on: Date;
-  updated_at: Date;
+  updated_on: Date;
   is_active: boolean;
 }
 

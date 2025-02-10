@@ -14,14 +14,14 @@ function createCase(caseData) {
         db.run(
             `INSERT INTO cases (
                 id, case_number, workflow_id, current_role_id, current_stage_id,
-                created_at, updated_at, modified_by, assigned_user_id, author_username, status
+                created_on, updated_on, modified_by, assigned_user_id, author_username, status
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 id, caseNumber, caseData.workflow_id, caseData.current_role_id,
                 caseData.current_stage_id, now, now, caseData.modified_by,
                 caseData.assigned_user_id, caseData.author_username, 'active'
             ],
-            function(err) {
+            function (err) {
                 if (err) {
                     reject(err);
                     return;
@@ -55,8 +55,8 @@ function getCaseById(id) {
                 resolve(null);
                 return;
             }
-            row.is_late = isLate(row.created_at);
-            row.is_overdue = isOverdue(row.created_at);
+            row.is_late = isLate(row.created_on);
+            row.is_overdue = isOverdue(row.created_on);
             resolve(row);
         });
     });
@@ -66,15 +66,15 @@ function updateCase(id, updateData) {
     const now = new Date().toISOString();
     const updates = [];
     const values = [];
-    
+
     Object.keys(updateData).forEach(key => {
         if (key !== 'id' && key !== 'case_number') {
             updates.push(`${key} = ?`);
             values.push(updateData[key]);
         }
     });
-    
-    updates.push('updated_at = ?');
+
+    updates.push('updated_on = ?');
     values.push(now);
     values.push(id);
 
@@ -82,7 +82,7 @@ function updateCase(id, updateData) {
         db.run(
             `UPDATE cases SET ${updates.join(', ')} WHERE id = ?`,
             values,
-            function(err) {
+            function (err) {
                 if (err) {
                     reject(err);
                     return;
@@ -95,7 +95,7 @@ function updateCase(id, updateData) {
 
 function deleteCase(id) {
     return new Promise((resolve, reject) => {
-        db.run('DELETE FROM cases WHERE id = ?', [id], function(err) {
+        db.run('DELETE FROM cases WHERE id = ?', [id], function (err) {
             if (err) {
                 reject(err);
                 return;
