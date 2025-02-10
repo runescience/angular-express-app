@@ -1170,6 +1170,8 @@ app.delete("/api/approval-stages/:id", (req, res) => {
     );
 });
 
+
+
 // Question Types endpoints
 app.get("/api/question-types", (req, res) => {
     db.all("SELECT * FROM question_types", [], (err, rows) => {
