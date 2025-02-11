@@ -67,56 +67,65 @@
 
 
                     <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-                        <div class="mb-3">
-                            <label class="form-label">Username</label>
-                            <input type="text" class="form-control" formControlName="username">
+                        <!-- Username field -->
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input id="username" type="text" formControlName="username" class="form-control"
+                                [ngClass]="{'is-invalid': isFieldInvalid('username')}">
+                            <div class="invalid-feedback" *ngIf="isFieldInvalid('username')">
+                                {{ getErrorMessage('username') }}
+                            </div>
                         </div>
 
-
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" formControlName="email">
+                        <!-- Email field -->
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input id="email" type="email" formControlName="email" class="form-control"
+                                [ngClass]="{'is-invalid': isFieldInvalid('email')}">
+                            <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
+                                {{ getErrorMessage('email') }}
+                            </div>
                         </div>
 
-
-                        <!-- Always show password field for new users -->
-                        <div class="mb-3" *ngIf="!isEditing">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" formControlName="password"
-                                required>
+                        <!-- Password field - shown only in create mode -->
+                        <div class="form-group" *ngIf="!isEditing">
+                            <label for="password">Password</label>
+                            <input id="password" type="password" formControlName="password" class="form-control"
+                                [ngClass]="{'is-invalid': isFieldInvalid('password')}">
+                            <div class="invalid-feedback" *ngIf="isFieldInvalid('password')">
+                                {{ getErrorMessage('password') }}
+                            </div>
                         </div>
 
-                        <!-- Show optional password field for existing users -->
-                        <div class="mb-3" *ngIf="isEditing">
-                            <label for="password" class="form-label">New Password (leave blank to keep current)</label>
-                            <input type="password" class="form-control" id="password" formControlName="password">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Roles</label>
-                            <select multiple class="form-select" formControlName="roles" [compareWith]="compareRoles">
+                        <!-- Roles selection -->
+                        <div class="form-group">
+                            <label>Roles</label>
+                            <select multiple formControlName="roles" class="form-control">
                                 <option *ngFor="let role of roles" [value]="role.role_id">
-                                    {{ role.role_name }}
+                                    {{role.role_name}}
                                 </option>
                             </select>
-
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" formControlName="is_active">
+                        <!-- Active status -->
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" formControlName="is_active">
                                 Active
                             </label>
                         </div>
 
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
-                            <button type="submit" class="btn btn-primary" [disabled]="!userForm.valid">
-                                {{ isEditing ? 'Update' : 'Create' }}
-                            </button>
+                        <!-- Error message display -->
+                        <div class="alert alert-danger" *ngIf="errorMessage">
+                            {{ errorMessage }}
                         </div>
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary" [disabled]="!isFormValid()">
+                            {{ isEditing ? 'Update' : 'Create' }} User
+                        </button>
                     </form>
+
                 </div>
             </div>
         </div>

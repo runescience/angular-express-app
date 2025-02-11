@@ -16,13 +16,11 @@ import { RolesComponent } from './role/role.component';
 import { UserComponent } from './user/user.component';
 import { StagesComponent } from './stages/stages.component';
 import { OptionListsComponent } from './option-lists/option-lists.component';
-
 import { LoginComponent } from './login/login.component';
 import { NotificationsComponent } from './notifications/notifications.component';
-
-import { Team } from './teams/team.entity';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TeamsModule } from './teams/teams.module';
 
 
 @NgModule({
@@ -32,7 +30,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     EschListComponent,
     SupportListComponent,
     DashboardComponent,
-    TeamsComponent,
     QuestionTypeComponent,
     WorkflowTemplateComponent,
     SelectWorkflowComponent,
@@ -45,9 +42,9 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   imports: [
     BrowserModule,
+    TeamsModule,
     HttpClientModule,
     BrowserModule,
-
     RouterModule,
     AppRoutingModule,
     ReactiveFormsModule

@@ -1,7 +1,8 @@
 
 import { Component, OnInit } from '@angular/core';
 import { QuestionTypeService } from './question-type.service';
-import { QuestionType } from './question-type.interface';
+import { QuestionType } from '../core/interfaces/question-type.interface'
+
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 

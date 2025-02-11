@@ -2,7 +2,9 @@
 // src/app/role/role.component.ts
 import { Component, OnInit } from '@angular/core';
 import { RolesService } from './roles.service';
-import { Role } from './role.interface';
+
+import { Role } from '../core/interfaces/role.interface'
+
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 

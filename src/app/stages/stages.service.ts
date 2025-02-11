@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApprovalStage } from './stages.interface';
+
+import { ApprovalStage } from '../core/interfaces/stages.interface'
+
 
 @Injectable({
     providedIn: 'root'
@@ -9,7 +11,7 @@ import { ApprovalStage } from './stages.interface';
 export class StagesService {
     private apiUrl = '/api/approval-stages';
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
     getStages(): Observable<ApprovalStage[]> {
         return this.http.get<ApprovalStage[]>(this.apiUrl);

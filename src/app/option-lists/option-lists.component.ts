@@ -1,7 +1,9 @@
 
 import { Component, OnInit } from '@angular/core';
 import { OptionListsService } from './option-lists.service';
-import { OptionList } from './option-list.interface';
+
+import { OptionList } from '../core/interfaces/option-list.interface'
+
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -40,7 +42,7 @@ export class OptionListsComponent implements OnInit {
   loadOptionLists() {
     this.loading = true;
     this.error = null;
-    
+
     this.optionListsService.getAllOptionLists()
       .subscribe({
         next: (optionLists) => {

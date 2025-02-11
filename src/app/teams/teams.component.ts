@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TeamsService } from './teams.service';
-import { Team } from './team.entity';
+
+import { Team } from '../core/interfaces/team.interface'
+
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 

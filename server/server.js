@@ -321,7 +321,6 @@ const db = new sqlite3.Database("teams.db", (err) => {
 
 
 // Get all users
-// Get all users
 app.get('/api/users', async (req, res) => {
     try {
         const userRepository = dataSource.getRepository(users);

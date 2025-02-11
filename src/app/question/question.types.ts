@@ -1,4 +1,5 @@
-import { Question } from "./question.interface";
+
+import { Question } from '../core/interfaces/question.interface'
 
 // question.types.ts
 export interface QuestionWithType extends Question {

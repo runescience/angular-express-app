@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Team } from './team.interface';
+import { Team } from '../core/interfaces/team.interface'
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ import { Team } from './team.interface';
 export class TeamsService {
   private apiUrl = 'http://localhost:3000/api/teams'; // Adjust URL to match your backend
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllTeams(): Observable<Team[]> {
     return this.http.get<Team[]>(this.apiUrl);

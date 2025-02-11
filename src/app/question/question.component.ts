@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
-
 import { QuestionTypeService } from '../question-type/question-type.service';
 import { QuestionService } from './question.service';
-import { QuestionType } from '../question-type/question-type.interface'; // Import the interface
-import { Question } from './question.interface';
+import { QuestionType } from '../core/interfaces/question-type.interface'
+import { Question } from '../core/interfaces/question.interface'
+
+// Import the interface
+
 
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
